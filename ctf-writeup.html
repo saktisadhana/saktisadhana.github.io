@@ -268,7 +268,6 @@
         <div id="pdf-canvas-container" style="display: none;"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.mjs" type="module"></script>
     <script type="module">
         import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.mjs';
 
@@ -292,7 +291,7 @@
             const viewport = page.getViewport({ scale: currentScale });
 
             const canvas = document.createElement('canvas');
-            canvas.id = 'pdf-page-' + pageNum;
+            canvas.id = `pdf-page-${pageNum}`;
             const ctx = canvas.getContext('2d');
             canvas.height = viewport.height;
             canvas.width = viewport.width;
@@ -307,7 +306,7 @@
                 const canvas = await renderPage(i);
                 container.appendChild(canvas);
             }
-            pageInfo.textContent = pdfDoc.numPages + ' page(s)';
+            pageInfo.textContent = `${pdfDoc.numPages} page(s)`;
         }
 
         async function loadPDF() {
