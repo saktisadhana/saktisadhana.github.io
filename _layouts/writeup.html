@@ -1,0 +1,48 @@
+---
+layout: default
+---
+
+<article class="writeup">
+  <header class="post__header">
+    <time class="post__date" datetime="{{ page.date | date_to_xmlschema }}">
+      {{ page.date | date: "%B %d, %Y" }}
+    </time>
+    <h1 class="post__title">{{ page.title }}</h1>
+    {% if page.description %}
+    <p class="post__description">{{ page.description }}</p>
+    {% endif %}
+    <div class="writeup__meta">
+      {% if page.event %}<span class="writeup__detail"><strong>Event:</strong> {{ page.event }}</span>{% endif %}
+      {% if page.team %}<span class="writeup__detail"><strong>Team:</strong> {{ page.team }}</span>{% endif %}
+      {% assign words = content | number_of_words %}
+      {% if words > 0 %}
+        {% assign minutes = words | divided_by: 200 %}
+        {% if minutes < 1 %}{% assign minutes = 1 %}{% endif %}
+        <span class="writeup__detail">{{ minutes }} min read</span>
+      {% endif %}
+    </div>
+    {% if page.tags and page.tags.size > 0 %}
+    <div class="post__tags">
+      {% for tag in page.tags %}
+      <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </header>
+
+  <div class="post__content prose">
+    {{ content }}
+  </div>
+
+  {% if page.pdf %}
+  <div class="writeup__pdf">
+    <a href="{{ page.pdf | relative_url }}" class="writeup__pdf-link" target="_blank" rel="noopener">
+      📄 Download PDF Writeup
+    </a>
+  </div>
+  {% endif %}
+
+  <footer class="post__footer">
+    <a href="{{ '/writeups' | relative_url }}" class="post__back">&larr; All writeups</a>
+  </footer>
+</article>

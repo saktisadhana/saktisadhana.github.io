@@ -1,0 +1,57 @@
+# Site Settings
+title: Sakti Sadhana
+description: "IT undergrad exploring cybersecurity through CTF competitions, security research, and hands-on problem solving."
+url: "https://saktisadhana.netlify.app"
+baseurl: ""
+author:
+  name: Sakti Sadhana
+  email: ""
+  bio: "IT Undergrad. CTF player. Building things on the internet."
+
+# Build Settings
+markdown: kramdown
+highlighter: rouge
+permalink: /blog/:title/
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Collections
+collections:
+  writeups:
+    output: true
+    permalink: /writeups/:title/
+
+# Exclude from build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - node_modules
+  - vendor
+  - _preview.html
+
+# Collections
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+  - scope:
+      path: ""
+      type: "writeups"
+    values:
+      layout: "writeup"
+
+# Feed
+feed:
+  path: feed.xml

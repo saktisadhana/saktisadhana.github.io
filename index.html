@@ -1,0 +1,33 @@
+---
+layout: default
+title: Home
+---
+
+<section class="hero">
+  <h1 class="hero__title">Sakti Sadhana</h1>
+  <p class="hero__sub">{{ site.description }}</p>
+</section>
+
+<section>
+  <p class="section-label">Recent Posts</p>
+
+  <ul class="post-list">
+    {% for post in site.posts limit:10 %}
+    <li class="post-list__item fade-in">
+      <a href="{{ post.url | relative_url }}" class="post-list__link">
+        <time class="post-list__date" datetime="{{ post.date | date_to_xmlschema }}">
+          {{ post.date | date: "%b %d, %Y" }}
+        </time>
+        <h2 class="post-list__title">{{ post.title }}</h2>
+        {% if post.description %}
+        <p class="post-list__desc">{{ post.description }}</p>
+        {% endif %}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if site.posts.size == 0 %}
+  <p style="color: var(--gray-400); font-size: 0.9rem;">No posts yet. Start writing from the <a href="/admin">CMS</a>.</p>
+  {% endif %}
+</section>

@@ -1,0 +1,44 @@
+---
+layout: default
+title: Tags
+permalink: /tags/
+---
+
+<div class="blog-header">
+  <h1>Tags</h1>
+</div>
+
+{% if site.tags.size > 0 %}
+<div class="tag-cloud">
+  {% assign sorted_tags = site.tags | sort %}
+  {% for tag in sorted_tags %}
+  <a href="#{{ tag[0] | slugify }}" class="tag-cloud__item">
+    {{ tag[0] }} <span class="tag-cloud__count">{{ tag[1].size }}</span>
+  </a>
+  {% endfor %}
+</div>
+
+<div class="tag-sections">
+  {% assign sorted_tags = site.tags | sort %}
+  {% for tag in sorted_tags %}
+  <section class="tag-section fade-in" id="{{ tag[0] | slugify }}">
+    <h2 class="tag-section__title"># {{ tag[0] }}</h2>
+    <ul class="post-list">
+      {% assign sorted_posts = tag[1] | sort: "date" | reverse %}
+      {% for post in sorted_posts %}
+      <li class="post-list__item">
+        <a href="{{ post.url | relative_url }}" class="post-list__link">
+          <time class="post-list__date" datetime="{{ post.date | date_to_xmlschema }}">
+            {{ post.date | date: "%b %d, %Y" }}
+          </time>
+          <h3 class="post-list__title" style="font-size: 1rem;">{{ post.title }}</h3>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endfor %}
+</div>
+{% else %}
+<p style="color: var(--gray-400); font-size: 0.9rem;">No tags yet.</p>
+{% endif %}
