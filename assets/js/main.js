@@ -75,21 +75,31 @@ function initThemeToggle() {
   var btn = document.getElementById('theme-toggle');
   if (!btn) return;
 
+  function syncGiscus(theme) {
+    var iframe = document.querySelector('iframe.giscus-frame');
+    if (!iframe) return;
+    iframe.contentWindow.postMessage(
+      { giscus: { setConfig: { theme: theme === 'light' ? 'light' : 'transparent_dark' } } },
+      'https://giscus.app'
+    );
+  }
+
   function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
     btn.textContent = theme === 'dark' ? '☀' : '☾';
     btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-    var iframe = document.querySelector('iframe.giscus-frame');
-    if (iframe) {
-      iframe.contentWindow.postMessage(
-        { giscus: { setConfig: { theme: theme === 'light' ? 'light' : 'transparent_dark' } } },
-        'https://giscus.app'
-      );
-    }
+    syncGiscus(theme);
   }
 
   applyTheme(localStorage.getItem('theme') || 'dark');
+
+  // Giscus iframe isn't ready at DOMContentLoaded — sync once it signals it has loaded
+  window.addEventListener('message', function onGiscusReady(e) {
+    if (e.origin !== 'https://giscus.app') return;
+    syncGiscus(document.documentElement.getAttribute('data-theme') || 'dark');
+    window.removeEventListener('message', onGiscusReady);
+  });
 
   btn.addEventListener('click', function () {
     applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
