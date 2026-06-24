@@ -23,6 +23,8 @@ permalink: /tags/
   {% for tag in sorted_tags %}
   <section class="tag-section fade-in" id="{{ tag[0] | slugify }}">
     <h2 class="tag-section__title"># {{ tag[0] }}</h2>
+    {% assign desc = site.tag_descriptions[tag[0]] %}
+    {% if desc %}<p class="tag-section__desc">{{ desc }}</p>{% endif %}
     <ul class="post-list">
       {% assign sorted_posts = tag[1] | sort: "date" | reverse %}
       {% for post in sorted_posts %}

@@ -2,6 +2,8 @@
 layout: default
 ---
 
+<div id="progress-bar"></div>
+
 <article class="post">
   <header class="post__header">
     <time class="post__date" datetime="{{ page.date | date_to_xmlschema }}">
@@ -28,7 +30,68 @@ layout: default
     {{ content }}
   </div>
 
+  {% assign seen = "" | split: "" %}
+  {% assign related = "" | split: "" %}
+  {% for tag in page.tags %}
+    {% for post in site.posts %}
+      {% if post.url != page.url and post.tags contains tag %}
+        {% unless seen contains post.url %}
+          {% assign seen = seen | push: post.url %}
+          {% assign related = related | push: post %}
+        {% endunless %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+  {% assign related = related | slice: 0, 3 %}
+  {% if related.size > 0 %}
+  <section class="related-posts">
+    <h2 class="related-posts__title">Related posts</h2>
+    <ul class="post-list">
+      {% for post in related %}
+      <li class="post-list__item">
+        <a href="{{ post.url | relative_url }}" class="post-list__link">
+          <time class="post-list__date">{{ post.date | date: "%b %d, %Y" }}</time>
+          <div class="post-list__title">{{ post.title }}</div>
+          {% if post.description %}<p class="post-list__desc">{{ post.description }}</p>{% endif %}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <!-- Giscus comments — visit https://giscus.app to generate your repo-id and category-id -->
+  <div class="giscus-wrap">
+    <script src="https://giscus.app/client.js"
+      data-repo="saktisadhana/saktisadhana.github.io"
+      data-repo-id="REPO_ID"
+      data-category="Announcements"
+      data-category-id="CATEGORY_ID"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="transparent_dark"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
   <footer class="post__footer">
     <a href="{{ '/blog' | relative_url }}" class="post__back">&larr; All posts</a>
   </footer>
 </article>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ page.title | escape }}",
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "author": { "@type": "Person", "name": "{{ site.author.name }}" },
+  "url": "{{ page.url | absolute_url }}",
+  "description": "{{ page.description | default: site.description | escape }}"
+}
+</script>

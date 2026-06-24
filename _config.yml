@@ -55,3 +55,13 @@ defaults:
 # Feed
 feed:
   path: feed.xml
+
+# Tag descriptions
+tag_descriptions:
+  ctf: "Write-ups and notes from Capture The Flag competitions."
+  web: "Web exploitation techniques and vulnerabilities."
+  cryptography: "Cryptographic challenges and cipher-breaking."
+  forensics: "Digital forensics, steganography, and file analysis."
+  security: "Security research, tools, and general concepts."
+  binary: "Binary exploitation, reverse engineering, and pwn."
+  misc: "Miscellaneous challenges and techniques."

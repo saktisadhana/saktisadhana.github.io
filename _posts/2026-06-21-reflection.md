@@ -1,17 +1,17 @@
 ---
-title: Welcome to My Blog
-date: 2026-05-06
-description: A fresh start
+title: Ringkasan Bab 4
+date: 2026-06-21
+description: A simple ringkasan about bab 4 calc 2
 tags:
   - personal
   - meta
 ---
 
-I've been meaning to start writing for a while. Not because I think I have groundbreaking things to say, but because writing helps me think.
+**Om Awigenam Astu Nama Sidem** berikut adalah ringkasan Bab 4
 
-## Why a blog?
+## 4.1 Luas Antara Dua Kurva
 
-There's something about putting words down that forces clarity. When I'm learning something new — a systems concept, a programming pattern, a debugging technique — writing about it cements my understanding in a way that just reading never does.
+Bab ini 
 
 ## What to expect
 

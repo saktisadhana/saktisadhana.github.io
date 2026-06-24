@@ -411,6 +411,35 @@ img {
   font-size: 0.85rem;
   line-height: 1.65;
   border: 1px solid var(--gray-200);
+  position: relative;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--gray-200);
+  border: 1px solid var(--gray-400);
+  color: var(--gray-500);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1.6;
+  user-select: none;
+}
+
+.copy-btn:hover {
+  background: var(--gray-400);
+  color: var(--black);
+}
+
+.copy-btn.copied {
+  color: var(--green);
+  border-color: var(--green);
+  background: var(--green-light);
 }
 
 .prose pre code {
@@ -442,6 +471,12 @@ img {
 
 .prose a:hover {
   text-decoration-color: var(--green);
+}
+
+.prose a[href^="http"]::after {
+  content: " ↗";
+  font-size: 0.75em;
+  opacity: 0.6;
 }
 
 .prose strong {
@@ -544,6 +579,45 @@ img {
   letter-spacing: 0.04em;
 }
 
+/* --- Theme Toggle --- */
+.nav__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.nav__theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--gray-500);
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.nav__theme-toggle:hover {
+  color: var(--black);
+}
+
+/* --- Giscus Comments --- */
+.giscus-wrap {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--gray-200);
+}
+
+/* --- Tag Section Description --- */
+.tag-section__desc {
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  margin-top: calc(var(--space-sm) * -0.5);
+  margin-bottom: var(--space-md);
+}
+
 /* --- Tag Cloud --- */
 .tag-cloud {
   display: flex;
@@ -593,6 +667,66 @@ img {
   margin-bottom: var(--space-md);
   padding-bottom: var(--space-sm);
   border-bottom: 1px solid var(--gray-200);
+}
+
+/* --- Light Theme --- */
+[data-theme="light"] {
+  --black: #111111;
+  --white: #ffffff;
+  --bg: #fafafa;
+  --green: #1a7a47;
+  --green-light: #e6f5ee;
+  --green-dark: #135c35;
+  --gray-100: #f0f0f0;
+  --gray-200: #e0e0e0;
+  --gray-400: #aaaaaa;
+  --gray-500: #666666;
+  --gray-600: #333333;
+}
+
+[data-theme="light"] .prose pre {
+  background: #f5f5f5;
+  color: #1e1e1e;
+  border-color: var(--gray-200);
+}
+
+[data-theme="light"] .copy-btn {
+  background: #e8e8e8;
+  border-color: #cccccc;
+  color: #555555;
+}
+
+[data-theme="light"] .copy-btn:hover {
+  background: #d0d0d0;
+  color: #111111;
+}
+
+/* --- Reading Progress Bar --- */
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--green);
+  z-index: 200;
+  transition: width 0.1s linear;
+}
+
+/* --- Related Posts --- */
+.related-posts {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--gray-200);
+}
+
+.related-posts__title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-400);
+  margin-bottom: var(--space-lg);
 }
 
 /* --- Fade-in Animation --- */
