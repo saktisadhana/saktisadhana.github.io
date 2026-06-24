@@ -10,29 +10,37 @@ permalink: /writeups/
 </div>
 
 {% if site.writeups.size > 0 %}
-<ul class="post-list">
+<input class="search-input" id="search-input" type="search" placeholder="Search writeups…" aria-label="Search writeups">
+<p class="search-empty" id="search-empty" style="display:none;">No writeups match your search.</p>
+
+<ul class="post-list" id="post-list">
   {% assign sorted_writeups = site.writeups | sort: "date" | reverse %}
   {% for writeup in sorted_writeups %}
-  <li class="post-list__item fade-in">
-    <a href="{{ writeup.url | relative_url }}" class="post-list__link">
-      <div class="post-list__meta-row">
-        <time class="post-list__date" datetime="{{ writeup.date | date_to_xmlschema }}">
-          {{ writeup.date | date: "%b %d, %Y" }}
-        </time>
-        {% if writeup.event %}
-        <span class="post-list__event">{{ writeup.event }}</span>
+  <li class="post-list__item fade-in" data-title="{{ writeup.title | downcase }}" data-tags="{{ writeup.tags | join: ' ' | downcase }}">
+    <a href="{{ writeup.url | relative_url }}" class="post-list__link{% if writeup.og_image %} post-list__link--has-thumb{% endif %}">
+      <div class="post-list__body">
+        <div class="post-list__meta-row">
+          <time class="post-list__date" datetime="{{ writeup.date | date_to_xmlschema }}">
+            {{ writeup.date | date: "%b %d, %Y" }}
+          </time>
+          {% if writeup.event %}
+          <span class="post-list__event">{{ writeup.event }}</span>
+          {% endif %}
+        </div>
+        <h2 class="post-list__title">{{ writeup.title }}</h2>
+        {% if writeup.description %}
+        <p class="post-list__desc">{{ writeup.description }}</p>
+        {% endif %}
+        {% if writeup.tags and writeup.tags.size > 0 %}
+        <div class="post__tags" style="margin-top: 0.5rem;">
+          {% for tag in writeup.tags %}
+          <span class="tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
         {% endif %}
       </div>
-      <h2 class="post-list__title">{{ writeup.title }}</h2>
-      {% if writeup.description %}
-      <p class="post-list__desc">{{ writeup.description }}</p>
-      {% endif %}
-      {% if writeup.tags and writeup.tags.size > 0 %}
-      <div class="post__tags" style="margin-top: 0.5rem;">
-        {% for tag in writeup.tags %}
-        <span class="tag">{{ tag }}</span>
-        {% endfor %}
-      </div>
+      {% if writeup.og_image %}
+      <img src="{{ writeup.og_image | relative_url }}" alt="{{ writeup.title }}" class="post-list__thumb">
       {% endif %}
     </a>
   </li>

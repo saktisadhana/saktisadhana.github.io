@@ -8,22 +8,35 @@ permalink: /blog/
   <h1>Blog</h1>
 </div>
 
-<ul class="post-list">
+{% if site.posts.size > 0 %}
+<input class="search-input" id="search-input" type="search" placeholder="Search posts…" aria-label="Search posts">
+<p class="search-empty" id="search-empty" style="display:none;">No posts match your search.</p>
+
+<ul class="post-list" id="post-list">
   {% for post in site.posts %}
-  <li class="post-list__item fade-in">
-    <a href="{{ post.url | relative_url }}" class="post-list__link">
-      <time class="post-list__date" datetime="{{ post.date | date_to_xmlschema }}">
-        {{ post.date | date: "%b %d, %Y" }}
-      </time>
-      <h2 class="post-list__title">{{ post.title }}</h2>
-      {% if post.description %}
-      <p class="post-list__desc">{{ post.description }}</p>
+  <li class="post-list__item fade-in" data-title="{{ post.title | downcase }}" data-tags="{{ post.tags | join: ' ' | downcase }}">
+    <a href="{{ post.url | relative_url }}" class="post-list__link{% if post.og_image %} post-list__link--has-thumb{% endif %}">
+      <div class="post-list__body">
+        <div class="post-list__meta">
+          <time class="post-list__date" datetime="{{ post.date | date_to_xmlschema }}">
+            {{ post.date | date: "%b %d, %Y" }}
+          </time>
+          <span class="post-list__sep">·</span>
+          {% assign mins = post.content | number_of_words | divided_by: 200 %}{% if mins < 1 %}{% assign mins = 1 %}{% endif %}
+          <span class="post-list__readtime">{{ mins }} min</span>
+        </div>
+        <h2 class="post-list__title">{{ post.title }}</h2>
+        {% if post.description %}
+        <p class="post-list__desc">{{ post.description }}</p>
+        {% endif %}
+      </div>
+      {% if post.og_image %}
+      <img src="{{ post.og_image | relative_url }}" alt="{{ post.title }}" class="post-list__thumb">
       {% endif %}
     </a>
   </li>
   {% endfor %}
 </ul>
-
-{% if site.posts.size == 0 %}
+{% else %}
 <p style="color: var(--gray-400); font-size: 0.9rem;">No posts yet.</p>
 {% endif %}
