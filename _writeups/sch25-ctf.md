@@ -19,8 +19,8 @@ The SCH25 CTF was a cybersecurity competition covering multiple categories. Our 
 
 ## Categories Covered
 
-- **Web Exploitation** — SQL injection, XSS, authentication bypass
-- **Cryptography** — Encoding schemes, cipher analysis, key recovery
-- **Forensics** — File analysis, steganography, memory forensics
+- **Web Exploitation**: SQL injection, XSS, authentication bypass
+- **Cryptography**: Encoding schemes, cipher analysis, key recovery
+- **Forensics**: File analysis, steganography, memory forensics
 
 Download the full detailed writeup as a PDF above.

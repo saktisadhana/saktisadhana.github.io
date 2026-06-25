@@ -94,7 +94,7 @@ function initThemeToggle() {
 
   applyTheme(localStorage.getItem('theme') || 'dark');
 
-  // Giscus iframe isn't ready at DOMContentLoaded — sync once it signals it has loaded
+  // Giscus iframe isn't ready at DOMContentLoaded; sync once it signals it has loaded
   window.addEventListener('message', function onGiscusReady(e) {
     if (e.origin !== 'https://giscus.app') return;
     syncGiscus(document.documentElement.getAttribute('data-theme') || 'dark');
