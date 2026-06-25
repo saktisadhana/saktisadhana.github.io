@@ -20,8 +20,8 @@
   --green: #3ddc84;
   --green-light: #1a2e23;
   --green-dark: #6ee7a8;
-  --blue: #094ece;
-  --blue-light: #85a8ea;
+  --blue: #85a8ea;
+  --blue-dark: #094ece;
   --gray-100: #1a1a1a;
   --gray-200: #222222;
   --gray-400: #555555;
@@ -752,6 +752,7 @@ img {
   --white: #ffffff;
   --bg: #fafafa;
   --green: #1a7a47;
+  --blue: #094ece;
   --green-light: #e6f5ee;
   --green-dark: #135c35;
   --gray-100: #f0f0f0;
