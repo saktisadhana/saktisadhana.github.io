@@ -97,14 +97,22 @@ img {
 }
 
 .nav__logo {
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--black);
-  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  line-height: 1;
 }
 
-.nav__logo:hover {
-  color: var(--black);
+.nav__logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+  filter: grayscale(1) brightness(0.6);
+  transition: filter 0.35s ease, transform 0.35s ease;
+}
+
+.nav__logo:hover img {
+  filter: grayscale(0) brightness(1) drop-shadow(0 0 6px rgba(133, 168, 234, 0.35));
+  transform: scale(1.08);
 }
 
 .nav__links {
@@ -1039,21 +1047,25 @@ img {
   border-color: var(--blue);
 }
 
-/* Click (active) states */
-a:active,
+/* Click (active) states — subtle background tint */
 .post-list__link:active,
-.prose a:active { color: var(--blue); }
+.not-found__links a:active {
+  background: rgba(133, 168, 234, 0.08);
+}
+
+.prose a:active {
+  background: rgba(133, 168, 234, 0.1);
+  border-radius: 2px;
+}
 
 button:active,
 .copy-btn:active,
 .share-btn:active,
 .nav__toggle:active,
-.nav__theme-toggle:active {
-  color: var(--blue);
-  border-color: var(--blue);
+.nav__theme-toggle:active,
+#back-to-top:active {
+  background: rgba(133, 168, 234, 0.15);
 }
-
-#back-to-top:active { background: var(--blue); }
 
 /* --- Fade-in Animation --- */
 .fade-in {

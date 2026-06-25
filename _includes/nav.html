@@ -7,7 +7,9 @@
       </button>
       <button class="nav__theme-toggle" id="theme-toggle" aria-label="Toggle theme"></button>
     </div>
-    <a href="{{ '/' | relative_url }}" class="nav__logo">{{ site.title }}</a>
+    <a href="{{ '/' | relative_url }}" class="nav__logo" aria-label="{{ site.title }}">
+      <img src="{{ '/assets/favicon.svg' | relative_url }}" alt="{{ site.title }}">
+    </a>
   </div>
   <ul class="nav__links" id="nav-links">
     {% assign nav_pages = site.pages | where: "nav", true | sort: "nav_order" %}
