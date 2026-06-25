@@ -20,6 +20,8 @@
   --green: #3ddc84;
   --green-light: #1a2e23;
   --green-dark: #6ee7a8;
+  --blue: #094ece;
+  --blue-light: #85a8ea;
   --gray-100: #1a1a1a;
   --gray-200: #222222;
   --gray-400: #555555;
@@ -996,7 +998,7 @@ img {
 .not-found__code {
   font-size: 6rem;
   font-weight: 700;
-  color: var(--green);
+  color: var(--blue);
   font-family: var(--font-mono);
   line-height: 1;
   letter-spacing: -0.04em;
@@ -1032,9 +1034,25 @@ img {
 }
 
 .not-found__links a:hover {
-  color: var(--green);
-  border-color: var(--green);
+  color: var(--blue);
+  border-color: var(--blue);
 }
+
+/* Click (active) states */
+a:active,
+.post-list__link:active,
+.prose a:active { color: var(--blue); }
+
+button:active,
+.copy-btn:active,
+.share-btn:active,
+.nav__toggle:active,
+.nav__theme-toggle:active {
+  color: var(--blue);
+  border-color: var(--blue);
+}
+
+#back-to-top:active { background: var(--blue); }
 
 /* --- Fade-in Animation --- */
 .fade-in {

@@ -10,10 +10,15 @@
     <a href="{{ '/' | relative_url }}" class="nav__logo">{{ site.title }}</a>
   </div>
   <ul class="nav__links" id="nav-links">
-    <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a></li>
-    <li><a href="{{ '/blog' | relative_url }}" {% if page.url == '/blog/' or page.layout == 'post' %}class="active"{% endif %}>Blog</a></li>
-    <li><a href="{{ '/writeups' | relative_url }}" {% if page.url == '/writeups/' or page.layout == 'writeup' %}class="active"{% endif %}>Writeups</a></li>
-    <li><a href="{{ '/tags' | relative_url }}" {% if page.url == '/tags/' %}class="active"{% endif %}>Tags</a></li>
-    <li><a href="{{ '/about' | relative_url }}" {% if page.url == '/about/' %}class="active"{% endif %}>About</a></li>
+    {% assign nav_pages = site.pages | where: "nav", true | sort: "nav_order" %}
+    {% for nav_page in nav_pages %}
+      {% assign is_active = false %}
+      {% if page.url == nav_page.url %}
+        {% assign is_active = true %}
+      {% elsif nav_page.nav_match_layout and page.layout == nav_page.nav_match_layout %}
+        {% assign is_active = true %}
+      {% endif %}
+      <li><a href="{{ nav_page.url | relative_url }}"{% if is_active %} class="active"{% endif %}>{{ nav_page.title }}</a></li>
+    {% endfor %}
   </ul>
 </nav>

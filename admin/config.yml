@@ -1,6 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: saktisadhana/saktisadhana.github.io
   branch: main
+  auth_type: pkce
+  app_id: Ov23liXcd8V2etcHoGNF
 
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
