@@ -1,5 +1,10 @@
-<aside class="toc-sidebar">
-  <nav class="toc" id="toc">
-    <p class="toc__label">Contents</p>
-  </nav>
+<aside class="toc-sidebar" id="toc-sidebar" aria-label="Table of contents">
+  <div class="toc__head">
+    <span class="toc__label">Contents</span>
+    <button class="toc__btn" id="toc-collapse" type="button" aria-label="Hide contents" aria-expanded="true">&times;</button>
+  </div>
+  <nav class="toc" id="toc"></nav>
 </aside>
+<button class="toc__show" id="toc-show" type="button" aria-label="Show table of contents">
+  <span aria-hidden="true">&#9776;</span> Contents
+</button>

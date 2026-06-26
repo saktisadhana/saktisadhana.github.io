@@ -1,4 +1,4 @@
-<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||'dark');</script>
+<script>var d=document.documentElement;d.setAttribute('data-theme',localStorage.getItem('theme')||'dark');d.classList.add('js');if(localStorage.getItem('tocHidden')==='1')d.classList.add('toc-collapsed');</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0e0e0e">

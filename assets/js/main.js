@@ -14,18 +14,21 @@ function initNavToggle() {
   });
 }
 
-// Fade-in on scroll
+// Fade-in on scroll, with a staggered cascade for items revealed together
 function initFadeIn() {
   var elements = document.querySelectorAll('.fade-in');
   if (!elements.length) return;
 
   var observer = new IntersectionObserver(
     function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
+      var shown = entries
+        .filter(function (e) { return e.isIntersecting; })
+        .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+      shown.forEach(function (entry, i) {
+        // single-entry batches (scrolled into view later) get no delay
+        entry.target.style.transitionDelay = (i * 60) + 'ms';
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
       });
     },
     { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
@@ -34,6 +37,28 @@ function initFadeIn() {
   elements.forEach(function (el) {
     observer.observe(el);
   });
+}
+
+// Gentle reveal of article content (headings, media, quotes, code) on scroll
+function initProseReveal() {
+  var els = document.querySelectorAll('.prose h2, .prose h3, .prose img, .prose blockquote, .prose pre');
+  if (!els.length) return;
+
+  els.forEach(function (el) { el.classList.add('prose-reveal'); });
+
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  els.forEach(function (el) { observer.observe(el); });
 }
 
 // Copy button on code blocks
@@ -88,6 +113,8 @@ function initThemeToggle() {
     localStorage.setItem('theme', theme);
     btn.textContent = theme === 'dark' ? '☀' : '☾';
     btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', theme === 'light' ? '#fafafa' : '#0e0e0e');
     syncGiscus(theme);
   }
 
@@ -102,6 +129,10 @@ function initThemeToggle() {
 
   btn.addEventListener('click', function () {
     applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    // retrigger the spin animation
+    btn.classList.remove('spin');
+    void btn.offsetWidth;
+    btn.classList.add('spin');
   });
 }
 
@@ -159,8 +190,11 @@ function initToc() {
   if (!toc) return;
   var headings = document.querySelectorAll('.prose h2, .prose h3');
   if (headings.length < 2) {
-    var sidebar = document.querySelector('.toc-sidebar');
+    var sidebar = document.getElementById('toc-sidebar');
+    var showBtn = document.getElementById('toc-show');
     if (sidebar) sidebar.style.display = 'none';
+    if (showBtn) showBtn.style.display = 'none';
+    document.body.classList.add('no-toc');
     return;
   }
   var ul = document.createElement('ul');
@@ -190,6 +224,24 @@ function initToc() {
   }, { rootMargin: '-10% 0px -80% 0px' });
 
   headings.forEach(function (h) { tocObserver.observe(h); });
+}
+
+// Toggle the floating table of contents (hide / show, remembered across pages)
+function initTocToggle() {
+  if (document.body.classList.contains('no-toc')) return;
+  var collapseBtn = document.getElementById('toc-collapse');
+  var showBtn = document.getElementById('toc-show');
+  if (!collapseBtn || !showBtn) return;
+
+  function setHidden(hidden) {
+    document.documentElement.classList.toggle('toc-collapsed', hidden);
+    collapseBtn.setAttribute('aria-expanded', String(!hidden));
+    try { localStorage.setItem('tocHidden', hidden ? '1' : '0'); } catch (e) {}
+  }
+
+  setHidden(localStorage.getItem('tocHidden') === '1');
+  collapseBtn.addEventListener('click', function () { setHidden(true); });
+  showBtn.addEventListener('click', function () { setHidden(false); });
 }
 
 // Heading anchor links
@@ -243,6 +295,8 @@ function initLightbox() {
   }
 
   images.forEach(function (img) {
+    // leave linked images alone — let the link do its job
+    if (img.closest('a')) return;
     img.style.cursor = 'zoom-in';
     img.setAttribute('role', 'button');
     img.setAttribute('tabindex', '0');
@@ -283,6 +337,8 @@ document.addEventListener('DOMContentLoaded', function () {
   initShareBtn();
   initSearch();
   initToc();
+  initTocToggle();
   initHeadingAnchors();
   initLightbox();
+  initProseReveal();
 });

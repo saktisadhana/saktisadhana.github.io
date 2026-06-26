@@ -251,7 +251,7 @@ img {
   letter-spacing: -0.02em;
   line-height: 1.35;
   margin-top: var(--space-xs);
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .post-list__item:hover .post-list__title {
@@ -680,7 +680,7 @@ img {
   color: var(--gray-500);
   padding: 4px;
   line-height: 1;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.15s ease;
   display: flex;
   align-items: center;
 }
@@ -1077,23 +1077,31 @@ button:active,
   background: rgba(var(--blue-rgb), 0.15);
 }
 
-/* --- Table of Contents Sidebar --- */
-body.has-toc .main {
-  max-width: calc(var(--max-width) + 260px);
-}
-
+/* --- Table of Contents (floating, left, toggleable) --- */
 .post-layout {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 2.5rem;
-  align-items: start;
+  display: block;
 }
 
 .toc-sidebar {
-  position: sticky;
-  top: calc(var(--nav-height) + 1.5rem);
-  max-height: calc(100vh - var(--nav-height) - 3rem);
+  position: fixed;
+  top: calc(var(--nav-height) + 2rem);
+  left: 1.25rem;
+  width: 200px;
+  max-height: calc(100vh - var(--nav-height) - 4rem);
   overflow-y: auto;
+  padding: var(--space-md);
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  z-index: 90;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.toc__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
 }
 
 .toc__label {
@@ -1102,8 +1110,21 @@ body.has-toc .main {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--gray-400);
-  margin-bottom: var(--space-sm);
 }
+
+.toc__btn {
+  background: none;
+  border: none;
+  color: var(--gray-500);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0 4px;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.toc__btn:hover { color: var(--black); }
 
 .toc__list { list-style: none; }
 
@@ -1129,10 +1150,48 @@ body.has-toc .main {
   border-left-color: var(--green);
 }
 
-@media (max-width: 1059px) {
-  body.has-toc .main { max-width: var(--max-width); }
-  .post-layout { display: block; }
-  .toc-sidebar { display: none; }
+.toc__show {
+  position: fixed;
+  top: calc(var(--nav-height) + 2rem);
+  left: 1.25rem;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-6px);
+  transition: opacity 0.3s ease, transform 0.3s ease, color 0.2s ease;
+}
+
+.toc__show:hover { color: var(--black); }
+
+.toc-collapsed .toc-sidebar {
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toc-collapsed .toc__show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+/* Not enough room to float the ToC beside centered content */
+@media (max-width: 1359px) {
+  .toc-sidebar,
+  .toc__show {
+    display: none !important;
+  }
 }
 
 /* --- Heading Anchor Links --- */
@@ -1202,16 +1261,121 @@ body.has-toc .main {
   padding: 1px 8px;
 }
 
-/* --- Fade-in Animation --- */
-.fade-in {
+/* --- Scroll Reveal (progressive enhancement: hidden only when JS is on) --- */
+html.js .fade-in {
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-.fade-in.visible {
+html.js .fade-in.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+html.js .prose-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+html.js .prose-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Entrance --- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+html.js .hero,
+html.js .blog-header,
+html.js .page__header,
+html.js .post__header {
+  animation: fadeUp 0.5s ease both;
+}
+
+/* --- Animated mobile menu --- */
+@keyframes navMenuIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+html.js .nav__links.open {
+  animation: navMenuIn 0.25s ease;
+}
+
+/* --- Post card hover: title shift + arrow --- */
+.post-list__title::after {
+  content: "→";
+  display: inline-block;
+  max-width: 0;
+  margin-left: 0;
+  opacity: 0;
+  transform: translateX(-4px);
+  overflow: hidden;
+  vertical-align: middle;
+  color: var(--green);
+  transition: max-width 0.2s ease, opacity 0.2s ease, transform 0.2s ease, margin-left 0.2s ease;
+}
+
+.post-list__item:hover .post-list__title {
+  transform: translateX(3px);
+}
+
+.post-list__item:hover .post-list__title::after {
+  max-width: 1.4em;
+  margin-left: 0.35em;
+  opacity: 0.85;
+  transform: none;
+}
+
+/* --- Theme toggle icon spin --- */
+@keyframes iconSpin {
+  to { transform: rotate(360deg); }
+}
+
+.nav__theme-toggle.spin {
+  animation: iconSpin 0.4s ease;
+}
+
+/* --- Tag chip hover --- */
+.tag {
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.tag:hover {
+  transform: translateY(-1px);
+}
+
+/* --- Button press feedback --- */
+.copy-btn:active,
+.share-btn:active,
+#back-to-top:active,
+.nav__theme-toggle:active {
+  transform: scale(0.96);
+}
+
+/* --- Focus-visible rings --- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+.post-list__link:focus-visible,
+.toc__link:focus-visible,
+.tag-cloud__item:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* --- Anchor targets clear the sticky nav --- */
+.prose h2,
+.prose h3,
+.prose h4,
+.tag-section {
+  scroll-margin-top: calc(var(--nav-height) + 1rem);
 }
 
 /* --- Responsive --- */
@@ -1257,6 +1421,7 @@ body.has-toc .main {
   .post__back,
   .search-input,
   .toc-sidebar,
+  .toc__show,
   #lightbox {
     display: none !important;
   }
@@ -1264,6 +1429,10 @@ body.has-toc .main {
   body {
     background: #ffffff;
     color: #111111;
+  }
+
+  .post-layout {
+    display: block;
   }
 
   .prose pre {
@@ -1306,5 +1475,23 @@ body.has-toc .main {
   .tag {
     background: #eeeeee;
     color: #333333;
+  }
+}
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html.js .fade-in,
+  html.js .prose-reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
