@@ -17,7 +17,7 @@ Every component is free. There is no server, database, or paid service in the st
 | Content editor       | Browser-based CMS that commits to the repo | Decap CMS                                         | **Free** (open source, self-hosted from `/admin`) |
 | CMS login            | Authenticates editors                      | GitHub OAuth (PKCE)                               | **Free**                                          |
 | Comments             | Discussion threads under posts             | Giscus (GitHub Discussions)                       | **Free**                                          |
-| Fonts                | Inter + JetBrains Mono                     | Google Fonts                                      | **Free**                                          |
+| Fonts                | Inter + JetBrains Mono                     | Self-hosted (woff2, latin subset)                 | **Free**                                          |
 | Syntax highlighting  | Colors code blocks at build time           | Rouge (bundled)                                   | **Free**                                          |
 | SEO / feed / sitemap | Meta tags, RSS, sitemap.xml                | `jekyll-seo-tag`, `jekyll-feed`, `jekyll-sitemap` | **Free** (open source)                            |
 

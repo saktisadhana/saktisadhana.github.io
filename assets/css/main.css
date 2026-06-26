@@ -3,6 +3,50 @@
    Palette: Black, White, hint of Green
    ========================================================== */
 
+/* --- Self-hosted fonts (latin subset) --- */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/inter-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/inter-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/inter-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/inter-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/jetbrains-mono-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/jetbrains-mono-500.woff2') format('woff2');
+}
+
 /* --- Reset & Base --- */
 *,
 *::before,
@@ -1375,6 +1419,28 @@ input:focus-visible,
   outline: 2px solid var(--green);
   outline-offset: 2px;
   border-radius: 2px;
+}
+
+/* --- Skip to content (keyboard a11y) --- */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-md);
+  z-index: 1000;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--green);
+  color: #0e0e0e;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: var(--space-md);
+  outline: none;
 }
 
 /* --- Anchor targets clear the sticky nav --- */

@@ -25,7 +25,7 @@ layout: default
   </header>
 
   <div class="post__content prose">
-    {{ content }}
+    {{ content | replace: '<img ', '<img loading="lazy" decoding="async" ' }}
   </div>
 
   {% include related.html collection=site.posts title="Related posts" %}

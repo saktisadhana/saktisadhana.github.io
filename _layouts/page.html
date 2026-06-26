@@ -8,6 +8,6 @@ layout: default
   </header>
 
   <div class="page__content prose">
-    {{ content }}
+    {{ content | replace: '<img ', '<img loading="lazy" decoding="async" ' }}
   </div>
 </article>

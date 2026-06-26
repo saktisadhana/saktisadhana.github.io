@@ -41,7 +41,7 @@ nav_match_layout: writeup
         {% endif %}
       </div>
       {% if writeup.og_image %}
-      <img src="{{ writeup.og_image | relative_url }}" alt="{{ writeup.title }}" class="post-list__thumb">
+      <img src="{{ writeup.og_image | relative_url }}" alt="{{ writeup.title }}" class="post-list__thumb" loading="lazy" decoding="async">
       {% endif %}
     </a>
   </li>

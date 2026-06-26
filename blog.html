@@ -38,7 +38,7 @@ nav_match_layout: post
         {% endif %}
       </div>
       {% if post.og_image %}
-      <img src="{{ post.og_image | relative_url }}" alt="{{ post.title }}" class="post-list__thumb">
+      <img src="{{ post.og_image | relative_url }}" alt="{{ post.title }}" class="post-list__thumb" loading="lazy" decoding="async">
       {% endif %}
     </a>
   </li>
