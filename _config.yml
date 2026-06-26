@@ -1,17 +1,21 @@
 # Site Settings
 title: Sakti Sadhana
-description: "IT undergrad exploring cybersecurity through CTF competitions, security research, and hands-on problem solving."
+# Used by search engines and link previews — keep it descriptive and keyword-bearing.
+description: "Sakti Sadhana — CTF writeups, security research, and notes on cybersecurity and programming."
+# Friendly greeting shown on the homepage hero (visual only, not for SEO).
+tagline: "Welcome! (˶˃ ᵕ ˂˶)✧ Feel free to look around!"
 url: "https://saktisadhana.github.io"
 baseurl: ""
 author:
   name: Sakti Sadhana
   email: ""
-  bio: "IT Undergrad. CTF player. Building things on the internet."
+  bio: "(*ᴗ͈ˬᴗ͈)ꕤ*.ﾟ Blogs, WU, and etc  ✧₊⁺"
 lang: en
 
 # SEO (jekyll-seo-tag)
-twitter:
-  card: summary_large_image
+# Verify the site in Google Search Console, then paste the token below and uncomment
+# so search engines index it. (Bing: bing_site_verification.)
+# google_site_verification: "your-token-here"
 social:
   name: Sakti Sadhana
   links:

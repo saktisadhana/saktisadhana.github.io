@@ -1,5 +1,7 @@
-<script>var d=document.documentElement;d.setAttribute('data-theme',localStorage.getItem('theme')||'dark');d.classList.add('js');if(localStorage.getItem('tocHidden')==='1')d.classList.add('toc-collapsed');</script>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://giscus.app; style-src 'self' 'unsafe-inline' https://giscus.app; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://giscus.app; frame-src https://giscus.app; form-action 'self'; manifest-src 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script>var d=document.documentElement;d.setAttribute('data-theme',localStorage.getItem('theme')||'dark');d.classList.add('js');if(localStorage.getItem('tocHidden')==='1')d.classList.add('toc-collapsed');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0e0e0e">
 <meta name="author" content="{{ site.author.name }}">
@@ -18,6 +20,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/png">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="{{ social_image | absolute_url }}">
 {% endif %}
 
