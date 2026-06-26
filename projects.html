@@ -1,0 +1,31 @@
+---
+layout: page
+title: Projects
+permalink: /projects/
+nav: true
+nav_order: 6
+---
+
+<div class="project-grid">
+  {% if site.projects %}
+  {% assign sorted_projects = site.projects | sort: 'order' %}
+  {% for project in sorted_projects %}
+  <article class="project-card fade-in">
+    <div class="project-card__body">
+      <h2 class="project-card__name">{{ project.name }}</h2>
+      <p class="project-card__desc">{{ project.description }}</p>
+      <div class="project-card__tech">
+        {% for t in project.tech %}<span class="tag">{{ t }}</span>{% endfor %}
+      </div>
+    </div>
+    <footer class="project-card__links">
+      {% if project.url %}<a href="{{ project.url }}" target="_blank" rel="noopener">GitHub &nearr;</a>{% endif %}
+      {% if project.live %}<a href="{{ project.live }}" target="_blank" rel="noopener">Live &nearr;</a>{% endif %}
+    </footer>
+  </article>
+  {% endfor %}
+  {% endif %}
+  {% if site.projects == nil or site.projects.size == 0 %}
+  <p style="color: var(--gray-400); font-size: 0.9rem;">No projects yet.</p>
+  {% endif %}
+</div>

@@ -5,6 +5,7 @@ description: A simple ringkasan about bab 4 calc 2
 tags:
   - personal
   - meta
+og_image: -
 ---
 
 **Om Awigenam Astu Nama Sidem** berikut adalah ringkasan Bab 4

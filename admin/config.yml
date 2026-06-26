@@ -34,8 +34,23 @@ collections:
       - { label: "Event", name: "event", widget: "string", required: false }
       - { label: "Team", name: "team", widget: "string", required: false }
       - { label: "PDF File", name: "pdf", widget: "file", required: false }
+      - { label: "Social Image", name: "og_image", widget: "image", required: false }
       - { label: "Tags", name: "tags", widget: "list", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "projects"
+    label: "Projects"
+    folder: "_projects"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "Tech Stack", name: "tech", widget: "list", required: false }
+      - { label: "GitHub URL", name: "url", widget: "string", required: false }
+      - { label: "Live URL", name: "live", widget: "string", required: false }
+      - { label: "Sort Order", name: "order", widget: "number", default: 99, required: false }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
 
   - name: "pages"
     label: "Pages"

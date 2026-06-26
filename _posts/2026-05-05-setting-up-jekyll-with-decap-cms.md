@@ -5,6 +5,7 @@ description: "A quick walkthrough of how this blog is set up: Jekyll, Netlify, a
 tags:
   - tutorial
   - jekyll
+og_image: -
 ---
 
 If you're reading this, the setup worked. Here's how it's put together.

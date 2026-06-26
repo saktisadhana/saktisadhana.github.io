@@ -47,3 +47,41 @@ nav_order: 1
   <p style="color: var(--gray-400); font-size: 0.9rem;">No posts yet. Start writing from the <a href="/admin">CMS</a>.</p>
   {% endif %}
 </section>
+
+<section>
+  <p class="section-label">Recent Writeups</p>
+
+  <ul class="post-list">
+    {% assign sorted_writeups = site.writeups | sort: 'date' | reverse %}
+    {% for writeup in sorted_writeups limit:5 %}
+    <li class="post-list__item fade-in">
+      <a href="{{ writeup.url | relative_url }}" class="post-list__link">
+        <div class="post-list__body">
+          <div class="post-list__meta">
+            <time class="post-list__date" datetime="{{ writeup.date | date_to_xmlschema }}">
+              {{ writeup.date | date: "%b %d, %Y" }}
+            </time>
+            {% if writeup.event %}
+            <span class="post-list__sep">·</span>
+            <span class="post-list__readtime">{{ writeup.event }}</span>
+            {% endif %}
+          </div>
+          <h2 class="post-list__title">{{ writeup.title }}</h2>
+          {% if writeup.description %}
+          <p class="post-list__desc">{{ writeup.description }}</p>
+          {% endif %}
+          {% if writeup.tags and writeup.tags.size > 0 %}
+          <div class="post-list__tags">
+            {% for tag in writeup.tags limit:3 %}<span class="tag">{{ tag }}</span>{% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% if site.writeups.size == 0 %}
+  <p style="color: var(--gray-400); font-size: 0.9rem;">No writeups yet.</p>
+  {% endif %}
+</section>

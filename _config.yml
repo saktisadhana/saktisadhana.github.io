@@ -16,8 +16,8 @@ social:
   name: Sakti Sadhana
   links:
     - https://github.com/saktisadhana
-# Default social-share image (1200x630 PNG). Drop a file in and uncomment to enable rich previews site-wide.
-# og_image: /assets/og-default.png
+# Default social-share image (1200x630). Used on any page without a per-page og_image.
+og_image: /assets/og-default.svg
 
 # Build Settings
 markdown: kramdown
@@ -32,6 +32,8 @@ plugins:
 
 # Collections
 collections:
+  projects:
+    output: false
   writeups:
     output: true
     permalink: /writeups/:title/

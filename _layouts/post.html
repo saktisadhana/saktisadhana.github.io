@@ -28,6 +28,19 @@ layout: default
     {{ content }}
   </div>
 
+  {% if page.og_image and page.og_image != "-" %}
+    {% assign resolved_og = page.og_image %}
+  {% else %}
+    {% assign resolved_og = site.og_image %}
+  {% endif %}
+  {% if resolved_og %}
+  <div class="writeup__pdf">
+    <a href="{{ resolved_og | relative_url }}" download class="writeup__pdf-link">
+      ↓ Download preview image
+    </a>
+  </div>
+  {% endif %}
+
   {% include related.html collection=site.posts title="Related posts" %}
   {% include comments.html %}
 

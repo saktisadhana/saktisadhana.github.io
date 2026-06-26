@@ -11,16 +11,8 @@ tags:
   - forensics
 ---
 
-Complete writeup for the SCH25 CTF competition covering web exploitation, cryptography, and forensics challenges.
+Complete writeup for the Schematics 2025 CTF competition where we manage to solve a couple of the easy web exploitation, cryptography, and forensics challenges.
 
 > This writeup is available as a PDF. Download it using the link below.
 
-The SCH25 CTF was a cybersecurity competition covering multiple categories. Our team **XxSaktihengkerwibuTzyxX** participated and documented our solutions and methodologies.
-
-## Categories Covered
-
-- **Web Exploitation**: SQL injection, XSS, authentication bypass
-- **Cryptography**: Encoding schemes, cipher analysis, key recovery
-- **Forensics**: File analysis, steganography, memory forensics
-
-Download the full detailed writeup as a PDF above.
+Thank you so much for the help nell :3

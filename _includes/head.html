@@ -8,8 +8,12 @@
 <!-- SEO: title, description, canonical, Open Graph, Twitter cards, and JSON-LD -->
 {% seo %}
 
-<!-- Social preview image: only emitted when a real raster image exists, so we never ship a broken card -->
-{% assign social_image = page.og_image | default: site.og_image %}
+<!-- Social preview image: page og_image takes priority; "-" means "use site default" -->
+{% if page.og_image and page.og_image != "-" %}
+  {% assign social_image = page.og_image %}
+{% else %}
+  {% assign social_image = site.og_image %}
+{% endif %}
 {% if social_image %}
 <meta property="og:image" content="{{ social_image | absolute_url }}">
 <meta name="twitter:image" content="{{ social_image | absolute_url }}">
