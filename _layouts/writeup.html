@@ -32,23 +32,10 @@ layout: default
     {{ content }}
   </div>
 
-  {% if page.pdf and page.pdf != "-" %}
+  {% if page.pdf %}
   <div class="writeup__pdf">
     <a href="{{ page.pdf | relative_url }}" class="writeup__pdf-link" target="_blank" rel="noopener">
        Download PDF Writeup
-    </a>
-  </div>
-  {% endif %}
-
-  {% if page.og_image and page.og_image != "-" %}
-    {% assign resolved_og = page.og_image %}
-  {% else %}
-    {% assign resolved_og = site.og_image %}
-  {% endif %}
-  {% if resolved_og %}
-  <div class="writeup__pdf">
-    <a href="{{ resolved_og | relative_url }}" download class="writeup__pdf-link">
-      ↓ Download preview image
     </a>
   </div>
   {% endif %}
