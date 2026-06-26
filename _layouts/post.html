@@ -4,41 +4,37 @@ layout: default
 
 <div id="progress-bar"></div>
 
-<div class="post-layout">
-  {% include toc-sidebar.html %}
-  <div>
-    <article class="post">
-      <header class="post__header">
-        <time class="post__date" datetime="{{ page.date | date_to_xmlschema }}">
-          {{ page.date | date: "%B %d, %Y" }}
-        </time>
-        <h1 class="post__title">{{ page.title }}</h1>
-        {% if page.description %}
-        <p class="post__description">{{ page.description }}</p>
-        {% endif %}
-        <span class="post__reading-time">{% include reading-time.html content=content %} min read</span>
-        {% if page.tags and page.tags.size > 0 %}
-        <div class="post__tags">
-          {% for tag in page.tags %}
-          <span class="tag">{{ tag }}</span>
-          {% endfor %}
-        </div>
-        {% endif %}
-      </header>
+{% include toc-sidebar.html %}
+<article class="post">
+  <header class="post__header">
+    <time class="post__date" datetime="{{ page.date | date_to_xmlschema }}">
+      {{ page.date | date: "%B %d, %Y" }}
+    </time>
+    <h1 class="post__title">{{ page.title }}</h1>
+    {% if page.description %}
+    <p class="post__description">{{ page.description }}</p>
+    {% endif %}
+    <span class="post__reading-time">{% include reading-time.html content=content %} min read</span>
+    {% if page.tags and page.tags.size > 0 %}
+    <div class="post__tags">
+      {% for tag in page.tags %}
+      <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </header>
 
-      <div class="post__content prose">
-        {{ content }}
-      </div>
-
-      {% include related.html collection=site.posts title="Related posts" %}
-      {% include comments.html %}
-
-      <footer class="post__footer">
-        <a href="{{ '/blog' | relative_url }}" class="post__back">&larr; All posts</a>
-        <button class="share-btn" id="share-btn">Copy link</button>
-      </footer>
-    </article>
-
-    <button id="back-to-top" aria-label="Back to top">↑</button>
+  <div class="post__content prose">
+    {{ content }}
   </div>
-</div>
+
+  {% include related.html collection=site.posts title="Related posts" %}
+  {% include comments.html %}
+
+  <footer class="post__footer">
+    <a href="{{ '/blog' | relative_url }}" class="post__back">&larr; All posts</a>
+    <button class="share-btn" id="share-btn">Copy link</button>
+  </footer>
+</article>
+
+<button id="back-to-top" aria-label="Back to top">↑</button>

@@ -1078,10 +1078,6 @@ button:active,
 }
 
 /* --- Table of Contents (floating, left, toggleable) --- */
-.post-layout {
-  display: block;
-}
-
 .toc-sidebar {
   position: fixed;
   top: calc(var(--nav-height) + 2rem);
@@ -1429,10 +1425,6 @@ input:focus-visible,
   body {
     background: #ffffff;
     color: #111111;
-  }
-
-  .post-layout {
-    display: block;
   }
 
   .prose pre {
