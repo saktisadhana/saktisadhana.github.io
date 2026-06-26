@@ -25,12 +25,16 @@ nav_match_layout: post
             {{ post.date | date: "%b %d, %Y" }}
           </time>
           <span class="post-list__sep">·</span>
-          {% assign mins = post.content | number_of_words | divided_by: 200 %}{% if mins < 1 %}{% assign mins = 1 %}{% endif %}
-          <span class="post-list__readtime">{{ mins }} min</span>
+          <span class="post-list__readtime">{% include reading-time.html content=post.content %} min</span>
         </div>
         <h2 class="post-list__title">{{ post.title }}</h2>
         {% if post.description %}
         <p class="post-list__desc">{{ post.description }}</p>
+        {% endif %}
+        {% if post.tags and post.tags.size > 0 %}
+        <div class="post-list__tags">
+          {% for tag in post.tags limit:3 %}<span class="tag">{{ tag }}</span>{% endfor %}
+        </div>
         {% endif %}
       </div>
       {% if post.og_image %}

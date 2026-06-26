@@ -35,10 +35,8 @@ nav_match_layout: writeup
         <p class="post-list__desc">{{ writeup.description }}</p>
         {% endif %}
         {% if writeup.tags and writeup.tags.size > 0 %}
-        <div class="post__tags" style="margin-top: 0.5rem;">
-          {% for tag in writeup.tags %}
-          <span class="tag">{{ tag }}</span>
-          {% endfor %}
+        <div class="post-list__tags">
+          {% for tag in writeup.tags limit:3 %}<span class="tag">{{ tag }}</span>{% endfor %}
         </div>
         {% endif %}
       </div>

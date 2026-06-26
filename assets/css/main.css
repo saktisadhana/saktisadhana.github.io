@@ -22,6 +22,7 @@
   --green-dark: #6ee7a8;
   --blue: #85a8ea;
   --blue-dark: #094ece;
+  --blue-rgb: 133, 168, 234;
   --gray-100: #1a1a1a;
   --gray-200: #222222;
   --gray-400: #555555;
@@ -111,7 +112,7 @@ img {
 }
 
 .nav__logo:hover img {
-  filter: grayscale(0) brightness(1) drop-shadow(0 0 6px rgba(133, 168, 234, 0.35));
+  filter: grayscale(0) brightness(1) drop-shadow(0 0 6px rgba(var(--blue-rgb), 0.35));
   transform: scale(1.08);
 }
 
@@ -761,6 +762,7 @@ img {
   --bg: #fafafa;
   --green: #1a7a47;
   --blue: #094ece;
+  --blue-rgb: 9, 78, 206;
   --green-light: #e6f5ee;
   --green-dark: #135c35;
   --gray-100: #f0f0f0;
@@ -883,7 +885,15 @@ img {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--gray-400);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
+}
+
+.related-posts .post-list__item {
+  padding: var(--space-sm) 0;
+}
+
+.related-posts .post-list__link:active {
+  background: none;
 }
 
 /* --- Post List Meta (date · read time) --- */
@@ -1050,11 +1060,11 @@ img {
 /* Click (active) states — subtle background tint */
 .post-list__link:active,
 .not-found__links a:active {
-  background: rgba(133, 168, 234, 0.08);
+  background: rgba(var(--blue-rgb), 0.08);
 }
 
 .prose a:active {
-  background: rgba(133, 168, 234, 0.1);
+  background: rgba(var(--blue-rgb), 0.1);
   border-radius: 2px;
 }
 
@@ -1064,7 +1074,132 @@ button:active,
 .nav__toggle:active,
 .nav__theme-toggle:active,
 #back-to-top:active {
-  background: rgba(133, 168, 234, 0.15);
+  background: rgba(var(--blue-rgb), 0.15);
+}
+
+/* --- Table of Contents Sidebar --- */
+body.has-toc .main {
+  max-width: calc(var(--max-width) + 260px);
+}
+
+.post-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.toc-sidebar {
+  position: sticky;
+  top: calc(var(--nav-height) + 1.5rem);
+  max-height: calc(100vh - var(--nav-height) - 3rem);
+  overflow-y: auto;
+}
+
+.toc__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-400);
+  margin-bottom: var(--space-sm);
+}
+
+.toc__list { list-style: none; }
+
+.toc__item { margin: 0; }
+
+.toc__item--h3 .toc__link { padding-left: var(--space-md); }
+
+.toc__link {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  padding: 3px 0 3px var(--space-sm);
+  border-left: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.toc__link:hover { color: var(--black); }
+
+.toc__link.active {
+  color: var(--green);
+  border-left-color: var(--green);
+}
+
+@media (max-width: 1059px) {
+  body.has-toc .main { max-width: var(--max-width); }
+  .post-layout { display: block; }
+  .toc-sidebar { display: none; }
+}
+
+/* --- Heading Anchor Links --- */
+.heading-anchor {
+  opacity: 0;
+  margin-left: 0.4em;
+  font-size: 0.75em;
+  color: var(--gray-400);
+  text-decoration: none;
+  transition: opacity 0.15s ease, color 0.15s ease;
+  font-weight: 400;
+}
+
+.prose h2:hover .heading-anchor,
+.prose h3:hover .heading-anchor,
+.prose h4:hover .heading-anchor {
+  opacity: 1;
+}
+
+.heading-anchor:hover { color: var(--green); }
+
+/* --- Image Lightbox --- */
+#lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+}
+
+#lightbox.open { display: flex; }
+
+#lightbox-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  color: #e5e5e5;
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+#lightbox-close:hover { opacity: 1; }
+
+/* --- Tags on Post List Cards --- */
+.post-list__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: var(--space-xs);
+}
+
+.post-list__tags .tag {
+  font-size: 0.7rem;
+  padding: 1px 8px;
 }
 
 /* --- Fade-in Animation --- */
@@ -1120,7 +1255,9 @@ button:active,
   .giscus-wrap,
   .related-posts,
   .post__back,
-  .search-input {
+  .search-input,
+  .toc-sidebar,
+  #lightbox {
     display: none !important;
   }
 

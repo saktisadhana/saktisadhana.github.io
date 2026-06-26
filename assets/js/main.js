@@ -1,8 +1,13 @@
-// Mobile nav toggle
-const toggle = document.getElementById('nav-toggle');
-const links = document.getElementById('nav-links');
+// Shared helper: turn heading text into a URL-safe id
+function slugify(text) {
+  return text.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
 
-if (toggle && links) {
+// Mobile nav toggle
+function initNavToggle() {
+  var toggle = document.getElementById('nav-toggle');
+  var links = document.getElementById('nav-links');
+  if (!toggle || !links) return;
   toggle.addEventListener('click', function () {
     toggle.classList.toggle('open');
     links.classList.toggle('open');
@@ -11,10 +16,10 @@ if (toggle && links) {
 
 // Fade-in on scroll
 function initFadeIn() {
-  const elements = document.querySelectorAll('.fade-in');
+  var elements = document.querySelectorAll('.fade-in');
   if (!elements.length) return;
 
-  const observer = new IntersectionObserver(
+  var observer = new IntersectionObserver(
     function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
@@ -30,8 +35,6 @@ function initFadeIn() {
     observer.observe(el);
   });
 }
-
-document.addEventListener('DOMContentLoaded', initFadeIn);
 
 // Copy button on code blocks
 function initCopyButtons() {
@@ -54,8 +57,6 @@ function initCopyButtons() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', initCopyButtons);
-
 // Reading progress bar
 function initProgressBar() {
   var bar = document.getElementById('progress-bar');
@@ -67,8 +68,6 @@ function initProgressBar() {
     bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
   }, { passive: true });
 }
-
-document.addEventListener('DOMContentLoaded', initProgressBar);
 
 // Light / dark mode toggle
 function initThemeToggle() {
@@ -106,8 +105,6 @@ function initThemeToggle() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', initThemeToggle);
-
 // Back to top button
 function initBackToTop() {
   var btn = document.getElementById('back-to-top');
@@ -119,8 +116,6 @@ function initBackToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
-
-document.addEventListener('DOMContentLoaded', initBackToTop);
 
 // Share / copy-link button
 function initShareBtn() {
@@ -137,8 +132,6 @@ function initShareBtn() {
     });
   });
 }
-
-document.addEventListener('DOMContentLoaded', initShareBtn);
 
 // Live search
 function initSearch() {
@@ -160,4 +153,136 @@ function initSearch() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', initSearch);
+// Table of Contents
+function initToc() {
+  var toc = document.getElementById('toc');
+  if (!toc) return;
+  var headings = document.querySelectorAll('.prose h2, .prose h3');
+  if (headings.length < 2) {
+    var sidebar = document.querySelector('.toc-sidebar');
+    if (sidebar) sidebar.style.display = 'none';
+    return;
+  }
+  var ul = document.createElement('ul');
+  ul.className = 'toc__list';
+  headings.forEach(function (h) {
+    if (!h.id) h.id = slugify(h.textContent);
+    var li = document.createElement('li');
+    li.className = 'toc__item toc__item--' + h.tagName.toLowerCase();
+    var a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    a.className = 'toc__link';
+    li.appendChild(a);
+    ul.appendChild(li);
+  });
+  toc.appendChild(ul);
+
+  var tocObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      var link = toc.querySelector('a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        toc.querySelectorAll('.toc__link').forEach(function (l) { l.classList.remove('active'); });
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px' });
+
+  headings.forEach(function (h) { tocObserver.observe(h); });
+}
+
+// Heading anchor links
+function initHeadingAnchors() {
+  document.querySelectorAll('.prose h2, .prose h3, .prose h4').forEach(function (h) {
+    if (!h.id) h.id = slugify(h.textContent);
+    var a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.className = 'heading-anchor';
+    a.setAttribute('aria-label', 'Link to this section');
+    // hide the literal "#" from assistive tech; the aria-label names the link
+    a.innerHTML = '<span aria-hidden="true">#</span>';
+    h.appendChild(a);
+  });
+}
+
+// Image lightbox (keyboard accessible)
+function initLightbox() {
+  var images = document.querySelectorAll('.prose img');
+  if (!images.length) return;
+
+  var lightbox = document.createElement('div');
+  lightbox.id = 'lightbox';
+  lightbox.setAttribute('role', 'dialog');
+  lightbox.setAttribute('aria-modal', 'true');
+  lightbox.setAttribute('aria-label', 'Image viewer');
+  var lbImg = document.createElement('img');
+  lbImg.id = 'lightbox-img';
+  lbImg.alt = '';
+  var closeBtn = document.createElement('button');
+  closeBtn.id = 'lightbox-close';
+  closeBtn.setAttribute('aria-label', 'Close image viewer');
+  closeBtn.textContent = '×';
+  lightbox.appendChild(lbImg);
+  lightbox.appendChild(closeBtn);
+  document.body.appendChild(lightbox);
+
+  var lastFocused = null;
+
+  function openLightbox(img) {
+    lastFocused = img;
+    lbImg.src = img.src;
+    lbImg.alt = img.alt || 'Enlarged image';
+    lightbox.classList.add('open');
+    closeBtn.focus();
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    if (lastFocused) lastFocused.focus();
+  }
+
+  images.forEach(function (img) {
+    img.style.cursor = 'zoom-in';
+    img.setAttribute('role', 'button');
+    img.setAttribute('tabindex', '0');
+    if (!img.alt) img.setAttribute('aria-label', 'View image full size');
+    img.addEventListener('click', function () { openLightbox(img); });
+    img.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openLightbox(img);
+      }
+    });
+  });
+
+  lightbox.addEventListener('click', function (e) {
+    if (e.target !== lbImg) closeLightbox();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') {
+      closeLightbox();
+    } else if (e.key === 'Tab') {
+      // only one focusable control in the dialog — keep focus on it
+      e.preventDefault();
+      closeBtn.focus();
+    }
+  });
+}
+
+// Boot everything once the DOM is ready
+document.addEventListener('DOMContentLoaded', function () {
+  initNavToggle();
+  initFadeIn();
+  initCopyButtons();
+  initProgressBar();
+  initThemeToggle();
+  initBackToTop();
+  initShareBtn();
+  initSearch();
+  initToc();
+  initHeadingAnchors();
+  initLightbox();
+});

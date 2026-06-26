@@ -1,0 +1,34 @@
+{%- comment -%}
+Related items by shared tag. Params:
+  include.collection  array to search (site.posts / site.writeups)
+  include.title       heading text
+{%- endcomment -%}
+{% assign seen = "" | split: "" %}
+{% assign related = "" | split: "" %}
+{% for tag in page.tags %}
+  {% for item in include.collection %}
+    {% if item.url != page.url and item.tags contains tag %}
+      {% unless seen contains item.url %}
+        {% assign seen = seen | push: item.url %}
+        {% assign related = related | push: item %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+{% assign related = related | slice: 0, 3 %}
+{% if related.size > 0 %}
+<section class="related-posts">
+  <h2 class="related-posts__title">{{ include.title }}</h2>
+  <ul class="post-list">
+    {% for item in related %}
+    <li class="post-list__item">
+      <a href="{{ item.url | relative_url }}" class="post-list__link">
+        <time class="post-list__date">{{ item.date | date: "%b %d, %Y" }}</time>
+        <div class="post-list__title">{{ item.title }}</div>
+        {% if item.description %}<p class="post-list__desc">{{ item.description }}</p>{% endif %}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}

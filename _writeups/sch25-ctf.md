@@ -6,9 +6,9 @@ event: "SCH25 CTF Competition"
 team: "XxSaktihengkerwibuTzyxX"
 pdf: "/assets/uploads/SCH25_CTF_XxSaktihengkerwibuTzyxX.pdf"
 tags:
-  - Web Exploitation
-  - Cryptography
-  - Forensics
+  - web
+  - cryptography
+  - forensics
 ---
 
 Complete writeup for the SCH25 CTF competition covering web exploitation, cryptography, and forensics challenges.

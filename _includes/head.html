@@ -1,23 +1,25 @@
 <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||'dark');</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0d0d0d">
+<meta name="theme-color" content="#0e0e0e">
 <meta name="author" content="{{ site.author.name }}">
 <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
 
 <!-- SEO: title, description, canonical, Open Graph, Twitter cards, and JSON-LD -->
 {% seo %}
 
-<!-- Social preview image (jekyll-seo-tag omits og:image when no `image` is set, so no duplication) -->
-{% assign social_image = page.og_image | default: '/assets/og-default.png' %}
+<!-- Social preview image: only emitted when a real raster image exists, so we never ship a broken card -->
+{% assign social_image = page.og_image | default: site.og_image %}
+{% if social_image %}
 <meta property="og:image" content="{{ social_image | absolute_url }}">
 <meta name="twitter:image" content="{{ social_image | absolute_url }}">
+{% endif %}
 
-<!-- Fonts -->
+<!-- Fonts (async, non-render-blocking) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 
 <!-- CSS -->
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">

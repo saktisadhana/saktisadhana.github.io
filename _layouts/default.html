@@ -3,7 +3,7 @@
 <head>
   {% include head.html %}
 </head>
-<body>
+<body{% if page.layout == "post" or page.layout == "writeup" %} class="has-toc"{% endif %}>
   {% include nav.html %}
 
   <main class="main">

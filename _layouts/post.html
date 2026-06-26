@@ -4,85 +4,41 @@ layout: default
 
 <div id="progress-bar"></div>
 
-<article class="post">
-  <header class="post__header">
-    <time class="post__date" datetime="{{ page.date | date_to_xmlschema }}">
-      {{ page.date | date: "%B %d, %Y" }}
-    </time>
-    <h1 class="post__title">{{ page.title }}</h1>
-    {% if page.description %}
-    <p class="post__description">{{ page.description }}</p>
-    {% endif %}
-    {% assign words = content | number_of_words %}
-    {% assign minutes = words | divided_by: 200 %}
-    {% if minutes < 1 %}{% assign minutes = 1 %}{% endif %}
-    <span class="post__reading-time">{{ minutes }} min read</span>
-    {% if page.tags and page.tags.size > 0 %}
-    <div class="post__tags">
-      {% for tag in page.tags %}
-      <span class="tag">{{ tag }}</span>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </header>
+<div class="post-layout">
+  {% include toc-sidebar.html %}
+  <div>
+    <article class="post">
+      <header class="post__header">
+        <time class="post__date" datetime="{{ page.date | date_to_xmlschema }}">
+          {{ page.date | date: "%B %d, %Y" }}
+        </time>
+        <h1 class="post__title">{{ page.title }}</h1>
+        {% if page.description %}
+        <p class="post__description">{{ page.description }}</p>
+        {% endif %}
+        <span class="post__reading-time">{% include reading-time.html content=content %} min read</span>
+        {% if page.tags and page.tags.size > 0 %}
+        <div class="post__tags">
+          {% for tag in page.tags %}
+          <span class="tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </header>
 
-  <div class="post__content prose">
-    {{ content }}
+      <div class="post__content prose">
+        {{ content }}
+      </div>
+
+      {% include related.html collection=site.posts title="Related posts" %}
+      {% include comments.html %}
+
+      <footer class="post__footer">
+        <a href="{{ '/blog' | relative_url }}" class="post__back">&larr; All posts</a>
+        <button class="share-btn" id="share-btn">Copy link</button>
+      </footer>
+    </article>
+
+    <button id="back-to-top" aria-label="Back to top">↑</button>
   </div>
-
-  {% assign seen = "" | split: "" %}
-  {% assign related = "" | split: "" %}
-  {% for tag in page.tags %}
-    {% for post in site.posts %}
-      {% if post.url != page.url and post.tags contains tag %}
-        {% unless seen contains post.url %}
-          {% assign seen = seen | push: post.url %}
-          {% assign related = related | push: post %}
-        {% endunless %}
-      {% endif %}
-    {% endfor %}
-  {% endfor %}
-  {% assign related = related | slice: 0, 3 %}
-  {% if related.size > 0 %}
-  <section class="related-posts">
-    <h2 class="related-posts__title">Related posts</h2>
-    <ul class="post-list">
-      {% for post in related %}
-      <li class="post-list__item">
-        <a href="{{ post.url | relative_url }}" class="post-list__link">
-          <time class="post-list__date">{{ post.date | date: "%b %d, %Y" }}</time>
-          <div class="post-list__title">{{ post.title }}</div>
-          {% if post.description %}<p class="post-list__desc">{{ post.description }}</p>{% endif %}
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
-  </section>
-  {% endif %}
-
-  <!-- Giscus comments: visit https://giscus.app to generate your repo-id and category-id -->
-  <div class="giscus-wrap">
-    <script src="https://giscus.app/client.js"
-      data-repo="saktisadhana/saktisadhana.github.io"
-      data-repo-id="R_kgDORMqTYw"
-      data-category="Announcements"
-      data-category-id="DIC_kwDORMqTY84C_zHH"
-      data-mapping="pathname"
-      data-strict="0"
-      data-reactions-enabled="1"
-      data-emit-metadata="0"
-      data-input-position="bottom"
-      data-theme="preferred_color_scheme"
-      data-lang="en"
-      crossorigin="anonymous"
-      async>
-    </script>
-  </div>
-
-  <footer class="post__footer">
-    <a href="{{ '/blog' | relative_url }}" class="post__back">&larr; All posts</a>
-    <button class="share-btn" id="share-btn">Copy link</button>
-  </footer>
-</article>
-
-<button id="back-to-top" aria-label="Back to top">↑</button>
+</div>

@@ -4,99 +4,53 @@ layout: default
 
 <div id="progress-bar"></div>
 
-<article class="writeup">
-  <header class="post__header">
-    <time class="post__date" datetime="{{ page.date | date_to_xmlschema }}">
-      {{ page.date | date: "%B %d, %Y" }}
-    </time>
-    <h1 class="post__title">{{ page.title }}</h1>
-    {% if page.description %}
-    <p class="post__description">{{ page.description }}</p>
-    {% endif %}
-    <div class="writeup__meta">
-      {% if page.event %}<span class="writeup__detail"><strong>Event:</strong> {{ page.event }}</span>{% endif %}
-      {% if page.team %}<span class="writeup__detail"><strong>Team:</strong> {{ page.team }}</span>{% endif %}
-      {% assign words = content | number_of_words %}
-      {% if words > 0 %}
-        {% assign minutes = words | divided_by: 200 %}
-        {% if minutes < 1 %}{% assign minutes = 1 %}{% endif %}
-        <span class="writeup__detail">{{ minutes }} min read</span>
-      {% endif %}
-    </div>
-    {% if page.tags and page.tags.size > 0 %}
-    <div class="post__tags">
-      {% for tag in page.tags %}
-      <span class="tag">{{ tag }}</span>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </header>
+<div class="post-layout">
+  {% include toc-sidebar.html %}
+  <div>
+    <article class="writeup">
+      <header class="post__header">
+        <time class="post__date" datetime="{{ page.date | date_to_xmlschema }}">
+          {{ page.date | date: "%B %d, %Y" }}
+        </time>
+        <h1 class="post__title">{{ page.title }}</h1>
+        {% if page.description %}
+        <p class="post__description">{{ page.description }}</p>
+        {% endif %}
+        <div class="writeup__meta">
+          {% if page.event %}<span class="writeup__detail"><strong>Event:</strong> {{ page.event }}</span>{% endif %}
+          {% if page.team %}<span class="writeup__detail"><strong>Team:</strong> {{ page.team }}</span>{% endif %}
+          <span class="writeup__detail">{% include reading-time.html content=content %} min read</span>
+        </div>
+        {% if page.tags and page.tags.size > 0 %}
+        <div class="post__tags">
+          {% for tag in page.tags %}
+          <span class="tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </header>
 
-  <div class="post__content prose">
-    {{ content }}
-  </div>
+      <div class="post__content prose">
+        {{ content }}
+      </div>
 
-  {% if page.pdf %}
-  <div class="writeup__pdf">
-    <a href="{{ page.pdf | relative_url }}" class="writeup__pdf-link" target="_blank" rel="noopener">
-      📄 Download PDF Writeup
-    </a>
-  </div>
-  {% endif %}
-
-  {% assign seen = "" | split: "" %}
-  {% assign related = "" | split: "" %}
-  {% for tag in page.tags %}
-    {% for writeup in site.writeups %}
-      {% if writeup.url != page.url and writeup.tags contains tag %}
-        {% unless seen contains writeup.url %}
-          {% assign seen = seen | push: writeup.url %}
-          {% assign related = related | push: writeup %}
-        {% endunless %}
-      {% endif %}
-    {% endfor %}
-  {% endfor %}
-  {% assign related = related | slice: 0, 3 %}
-  {% if related.size > 0 %}
-  <section class="related-posts">
-    <h2 class="related-posts__title">Related writeups</h2>
-    <ul class="post-list">
-      {% for writeup in related %}
-      <li class="post-list__item">
-        <a href="{{ writeup.url | relative_url }}" class="post-list__link">
-          <time class="post-list__date">{{ writeup.date | date: "%b %d, %Y" }}</time>
-          <div class="post-list__title">{{ writeup.title }}</div>
-          {% if writeup.description %}<p class="post-list__desc">{{ writeup.description }}</p>{% endif %}
+      {% if page.pdf %}
+      <div class="writeup__pdf">
+        <a href="{{ page.pdf | relative_url }}" class="writeup__pdf-link" target="_blank" rel="noopener">
+          📄 Download PDF Writeup
         </a>
-      </li>
-      {% endfor %}
-    </ul>
-  </section>
-  {% endif %}
+      </div>
+      {% endif %}
 
-  <!-- Giscus comments: visit https://giscus.app to generate your repo-id and category-id -->
-  <div class="giscus-wrap">
-    <script src="https://giscus.app/client.js"
-      data-repo="saktisadhana/saktisadhana.github.io"
-      data-repo-id="R_kgDORMqTYw"
-      data-category="Announcements"
-      data-category-id="DIC_kwDORMqTY84C_zHH"
-      data-mapping="pathname"
-      data-strict="0"
-      data-reactions-enabled="1"
-      data-emit-metadata="0"
-      data-input-position="bottom"
-      data-theme="preferred_color_scheme"
-      data-lang="en"
-      crossorigin="anonymous"
-      async>
-    </script>
+      {% include related.html collection=site.writeups title="Related writeups" %}
+      {% include comments.html %}
+
+      <footer class="post__footer">
+        <a href="{{ '/writeups' | relative_url }}" class="post__back">&larr; All writeups</a>
+        <button class="share-btn" id="share-btn">Copy link</button>
+      </footer>
+    </article>
+
+    <button id="back-to-top" aria-label="Back to top">↑</button>
   </div>
-
-  <footer class="post__footer">
-    <a href="{{ '/writeups' | relative_url }}" class="post__back">&larr; All writeups</a>
-    <button class="share-btn" id="share-btn">Copy link</button>
-  </footer>
-</article>
-
-<button id="back-to-top" aria-label="Back to top">↑</button>
+</div>

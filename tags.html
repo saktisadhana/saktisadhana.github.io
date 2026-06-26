@@ -10,32 +10,41 @@ nav_order: 4
   <h1>Tags</h1>
 </div>
 
-{% if site.tags.size > 0 %}
+{% comment %} Build a unified tag list across posts AND writeups (site.tags is posts-only). {% endcomment %}
+{% assign all_items = site.posts | concat: site.writeups %}
+{% assign all_tags = "" | split: "" %}
+{% for item in all_items %}
+  {% for tag in item.tags %}
+    {% unless all_tags contains tag %}{% assign all_tags = all_tags | push: tag %}{% endunless %}
+  {% endfor %}
+{% endfor %}
+{% assign all_tags = all_tags | sort %}
+
+{% if all_tags.size > 0 %}
 <div class="tag-cloud">
-  {% assign sorted_tags = site.tags | sort %}
-  {% for tag in sorted_tags %}
-  <a href="#{{ tag[0] | slugify }}" class="tag-cloud__item">
-    {{ tag[0] }} <span class="tag-cloud__count">{{ tag[1].size }}</span>
+  {% for tag in all_tags %}
+  {% assign tagged = all_items | where_exp: "i", "i.tags contains tag" %}
+  <a href="#{{ tag | slugify }}" class="tag-cloud__item">
+    {{ tag }} <span class="tag-cloud__count">{{ tagged.size }}</span>
   </a>
   {% endfor %}
 </div>
 
 <div class="tag-sections">
-  {% assign sorted_tags = site.tags | sort %}
-  {% for tag in sorted_tags %}
-  <section class="tag-section fade-in" id="{{ tag[0] | slugify }}">
-    <h2 class="tag-section__title"># {{ tag[0] }}</h2>
-    {% assign desc = site.tag_descriptions[tag[0]] %}
+  {% for tag in all_tags %}
+  {% assign tagged = all_items | where_exp: "i", "i.tags contains tag" | sort: "date" | reverse %}
+  <section class="tag-section fade-in" id="{{ tag | slugify }}">
+    <h2 class="tag-section__title"># {{ tag }}</h2>
+    {% assign desc = site.tag_descriptions[tag] %}
     {% if desc %}<p class="tag-section__desc">{{ desc }}</p>{% endif %}
     <ul class="post-list">
-      {% assign sorted_posts = tag[1] | sort: "date" | reverse %}
-      {% for post in sorted_posts %}
+      {% for item in tagged %}
       <li class="post-list__item">
-        <a href="{{ post.url | relative_url }}" class="post-list__link">
-          <time class="post-list__date" datetime="{{ post.date | date_to_xmlschema }}">
-            {{ post.date | date: "%b %d, %Y" }}
+        <a href="{{ item.url | relative_url }}" class="post-list__link">
+          <time class="post-list__date" datetime="{{ item.date | date_to_xmlschema }}">
+            {{ item.date | date: "%b %d, %Y" }}
           </time>
-          <h3 class="post-list__title" style="font-size: 1rem;">{{ post.title }}</h3>
+          <h3 class="post-list__title" style="font-size: 1rem;">{{ item.title }}</h3>
         </a>
       </li>
       {% endfor %}
