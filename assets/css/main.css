@@ -1584,10 +1584,13 @@ input:focus-visible,
   color: var(--green);
 }
 
-/* Explicit external-link arrow on every project link (GitHub + Live),
-   independent of the .prose http rule so both stay consistent. */
-.project-card__links a::after {
+/* Explicit external-link arrow on every project link (GitHub + Live).
+   Scoped under .prose and placed after the generic .prose http rule so it
+   wins for both links — same size/opacity, so they render identically. */
+.prose .project-card__links a::after {
   content: " ↗";
+  font-size: 0.75em;
+  opacity: 0.6;
 }
 
 /* --- Responsive --- */
