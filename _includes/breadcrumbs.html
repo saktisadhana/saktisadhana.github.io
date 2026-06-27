@@ -1,0 +1,22 @@
+{%- comment -%}
+BreadcrumbList structured data (Home -> section -> current page) for posts and writeups.
+Complements the BlogPosting JSON-LD that jekyll-seo-tag emits.
+{%- endcomment -%}
+{%- if page.layout == "writeup" -%}
+  {%- assign crumb_section = "Writeups" -%}
+  {%- assign crumb_section_url = "/writeups/" -%}
+{%- else -%}
+  {%- assign crumb_section = "Blog" -%}
+  {%- assign crumb_section_url = "/blog/" -%}
+{%- endif -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": {{ '/' | absolute_url | jsonify }} },
+    { "@type": "ListItem", "position": 2, "name": "{{ crumb_section }}", "item": {{ crumb_section_url | absolute_url | jsonify }} },
+    { "@type": "ListItem", "position": 3, "name": {{ page.title | jsonify }}, "item": {{ page.url | absolute_url | jsonify }} }
+  ]
+}
+</script>

@@ -45,4 +45,13 @@ fav32.save(os.path.join(ASSETS, "favicon-32.png"))
 fav48 = centered(fit(logo, 46), 48)
 fav48.save(os.path.join(ASSETS, "favicon.ico"), sizes=[(16, 16), (32, 32), (48, 48)])
 
-print("wrote apple-touch-icon.png, favicon-32.png, favicon.ico")
+# --- PWA icons (Android / Chrome / installable manifest) ---
+# "any" purpose: transparent, logo fills most of the canvas
+centered(fit(logo, 168), 192).save(os.path.join(ASSETS, "icon-192.png"))
+centered(fit(logo, 448), 512).save(os.path.join(ASSETS, "icon-512.png"))
+# "maskable" purpose: opaque bg + ~20% safe-zone padding (logo within the central ~64%)
+centered(fit(logo, 330), 512, bg=BG).convert("RGB").save(
+    os.path.join(ASSETS, "icon-maskable-512.png")
+)
+
+print("wrote apple-touch-icon.png, favicon-32.png, favicon.ico, icon-192/512, icon-maskable-512")

@@ -1,0 +1,20 @@
+---
+layout: null
+permalink: /site.webmanifest
+sitemap: false
+---
+{
+  "name": {{ site.title | jsonify }},
+  "short_name": "Sakti",
+  "description": {{ site.description | jsonify }},
+  "start_url": {{ '/' | relative_url | jsonify }},
+  "scope": {{ '/' | relative_url | jsonify }},
+  "display": "standalone",
+  "background_color": "#0e0e0e",
+  "theme_color": "#0e0e0e",
+  "icons": [
+    { "src": {{ '/assets/icon-192.png' | relative_url | jsonify }}, "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": {{ '/assets/icon-512.png' | relative_url | jsonify }}, "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": {{ '/assets/icon-maskable-512.png' | relative_url | jsonify }}, "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

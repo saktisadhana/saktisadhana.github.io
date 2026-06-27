@@ -76,6 +76,9 @@ defaults:
 # Feed
 feed:
   path: feed.xml
+  collections:
+    writeups:
+      path: "/feed/writeups.xml"
 
 # Tag descriptions
 tag_descriptions:

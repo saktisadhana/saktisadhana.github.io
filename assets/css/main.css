@@ -598,6 +598,8 @@ img {
 }
 
 .prose img {
+  max-width: 100%;
+  height: auto;
   border-radius: 4px;
   margin: 1.5em 0;
 }
@@ -1237,11 +1239,76 @@ button:active,
   transform: none;
 }
 
-/* Not enough room to float the ToC beside centered content */
+/* Backdrop behind the ToC drawer on narrow screens */
+.toc__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 290;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+@media (min-width: 1360px) {
+  .toc__backdrop { display: none; }
+}
+
+/* Below the floating-panel breakpoint, the ToC becomes a slide-in drawer */
 @media (max-width: 1359px) {
-  .toc-sidebar,
+  .toc-sidebar {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(300px, 82vw);
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    padding-top: calc(var(--nav-height) + 1rem);
+    z-index: 300;
+    opacity: 1;
+    transform: translateX(-110%);
+  }
+
+  /* launcher is always available, as a fixed pill at the bottom-left */
   .toc__show {
-    display: none !important;
+    top: auto;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    z-index: 110;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+  }
+
+  /* open (not collapsed): slide the drawer in, show backdrop, hide launcher */
+  html:not(.toc-collapsed) .toc-sidebar {
+    transform: none;
+    pointer-events: auto;
+  }
+  html:not(.toc-collapsed) .toc__backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  html:not(.toc-collapsed) .toc__show {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* collapsed (default at these widths): drawer off-screen, launcher visible */
+  .toc-collapsed .toc-sidebar {
+    transform: translateX(-110%);
+    opacity: 1;
+    pointer-events: none;
+  }
+  .toc-collapsed .toc__show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
   }
 }
 
@@ -1560,6 +1627,7 @@ input:focus-visible,
   .search-input,
   .toc-sidebar,
   .toc__show,
+  .toc__backdrop,
   #lightbox {
     display: none !important;
   }
@@ -1610,6 +1678,22 @@ input:focus-visible,
     background: #eeeeee;
     color: #333333;
   }
+}
+
+/* --- Utilities ---
+   Small helpers that replace inline style="" attributes so the CSP's
+   style-src can stay strict (no 'unsafe-inline'). */
+.muted-note {
+  color: var(--gray-400);
+  font-size: 0.9rem;
+}
+
+.is-hidden {
+  display: none;
+}
+
+.post-list__title--sm {
+  font-size: 1rem;
 }
 
 /* --- Reduced Motion --- */

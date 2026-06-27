@@ -13,7 +13,7 @@ nav_match_layout: post
 
 {% if site.posts.size > 0 %}
 <input class="search-input" id="search-input" type="search" placeholder="Search posts…" aria-label="Search posts">
-<p class="search-empty" id="search-empty" style="display:none;">No posts match your search.</p>
+<p class="search-empty is-hidden" id="search-empty">No posts match your search.</p>
 
 <ul class="post-list" id="post-list">
   {% for post in site.posts %}
@@ -45,5 +45,5 @@ nav_match_layout: post
   {% endfor %}
 </ul>
 {% else %}
-<p style="color: var(--gray-400); font-size: 0.9rem;">No posts yet.</p>
+<p class="muted-note">No posts yet.</p>
 {% endif %}

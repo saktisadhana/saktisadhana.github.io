@@ -180,7 +180,7 @@ function initSearch() {
       item.style.display = match ? '' : 'none';
       if (match) visible++;
     });
-    if (empty) empty.style.display = visible === 0 && q ? '' : 'none';
+    if (empty) empty.classList.toggle('is-hidden', !(visible === 0 && q));
   });
 }
 
@@ -231,17 +231,42 @@ function initTocToggle() {
   if (document.body.classList.contains('no-toc')) return;
   var collapseBtn = document.getElementById('toc-collapse');
   var showBtn = document.getElementById('toc-show');
+  var backdrop = document.getElementById('toc-backdrop');
+  var tocNav = document.getElementById('toc');
   if (!collapseBtn || !showBtn) return;
+
+  function isNarrow() { return window.matchMedia('(max-width: 1359px)').matches; }
 
   function setHidden(hidden) {
     document.documentElement.classList.toggle('toc-collapsed', hidden);
     collapseBtn.setAttribute('aria-expanded', String(!hidden));
-    try { localStorage.setItem('tocHidden', hidden ? '1' : '0'); } catch (e) {}
+    // Persist only on desktop; on narrow screens the drawer always starts closed.
+    if (!isNarrow()) {
+      try { localStorage.setItem('tocHidden', hidden ? '1' : '0'); } catch (e) {}
+    }
   }
 
-  setHidden(localStorage.getItem('tocHidden') === '1');
+  // Narrow screens: closed by default (drawer). Desktop: respect saved preference.
+  setHidden(isNarrow() ? true : localStorage.getItem('tocHidden') === '1');
+
   collapseBtn.addEventListener('click', function () { setHidden(true); });
   showBtn.addEventListener('click', function () { setHidden(false); });
+  if (backdrop) backdrop.addEventListener('click', function () { setHidden(true); });
+
+  // On the mobile drawer, tapping a heading link should close it.
+  if (tocNav) {
+    tocNav.addEventListener('click', function (e) {
+      if (isNarrow() && e.target.closest('.toc__link')) setHidden(true);
+    });
+  }
+
+  // If the window shrinks into drawer territory while open, close it so it
+  // doesn't cover the article.
+  window.addEventListener('resize', function () {
+    if (isNarrow() && !document.documentElement.classList.contains('toc-collapsed')) {
+      setHidden(true);
+    }
+  });
 }
 
 // Heading anchor links
