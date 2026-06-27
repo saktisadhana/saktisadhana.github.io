@@ -1533,12 +1533,13 @@ input:focus-visible,
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .project-card:hover {
+  transform: translateY(-4px);
   border-color: var(--green);
-  box-shadow: 0 0 0 1px var(--green);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--green);
 }
 
 .project-card__name {
@@ -1581,6 +1582,12 @@ input:focus-visible,
 
 .project-card__links a:hover {
   color: var(--green);
+}
+
+/* Explicit external-link arrow on every project link (GitHub + Live),
+   independent of the .prose http rule so both stay consistent. */
+.project-card__links a::after {
+  content: " ↗";
 }
 
 /* --- Responsive --- */
