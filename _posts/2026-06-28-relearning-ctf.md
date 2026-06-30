@@ -1,0 +1,44 @@
+---
+title: Reflection and Evaluation
+date: 2026-06-21
+description: What a year...
+tags:
+  - personal
+  - meta
+---
+
+**Om Awigenam Astu Nama Sidem** I usually write in english but for this post im gonna use a mixture of Bahasa Indonesia and English, because why not :3
+
+## Relearning Binex & RevEng
+
+### Evaluation & Reflection
+Jujur aku mulai dengan Binex dan RevENg gara gara UCS lagi ada class tentang Binex, sejak dulu aku emang agak susah untuk nembus ke cagtegory ini dibanding category seperti WebEx. Anyways dari class aku mendapatkan ilmu mendaging ini
+
+![](Pasted%20image%2020260628152429.png)
+
+Finally aku ada learning path yang harus aku follow, seingetku juga ada beberapa resources bagus untuk belajar Reveng, tetapi gara gara batreiku lagi low dan aku sedang di airport 
+
+![](Pasted%20image%2020260628152534.png)
+So i'll flesh out this post more.
+
+![](Pasted%20image%2020260628152741.png)
+
+## What to expect
+
+Mostly technical posts:
+
+- **Systems programming**: OS concepts, C, Rust
+- **Dev logs**: things I'm building, problems I've solved
+- **Notes**: shorter pieces on tools, workflows, or ideas
+
+Nothing fancy. Just honest writing about things I'm working through.
+
+## The stack
+
+This blog runs on [Jekyll](https://jekyllrb.com/) and is hosted on [Netlify](https://netlify.com). I manage content through [Decap CMS](https://decapcms.org/): a free, open-source CMS that commits directly to the Git repo.
+
+No frameworks. No build tools. Just markdown, HTML, and CSS.
+
+> "The best time to plant a tree was twenty years ago. The second best time is now."
+
+Let's see where this goes.

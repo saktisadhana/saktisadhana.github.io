@@ -1,13 +1,13 @@
 ---
-title: Ringkasan Bab 4
+title: Reflection and Evaluation
 date: 2026-06-21
-description: A simple ringkasan about bab 4 calc 2
+description: What a year...
 tags:
   - personal
   - meta
 ---
 
-**Om Awigenam Astu Nama Sidem** berikut adalah ringkasan Bab 4
+**Om Awigenam Astu Nama Sidem**, what a year it 
 
 ## 4.1 Luas Antara Dua Kurva
 
