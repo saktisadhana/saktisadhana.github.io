@@ -1,6 +1,7 @@
 ---
 title: Reflection and Evaluation
 date: 2026-06-21
+published: false
 description: What a year...
 tags:
   - personal

@@ -1,6 +1,7 @@
 ---
-title: "Setting Up Jekyll with Decap CMS"
+title: Setting Up Jekyll with Decap CMS
 date: 2026-05-06
+published: false
 description: "A quick walkthrough of how this blog is set up: Jekyll, Netlify, and a free CMS."
 tags:
   - tutorial

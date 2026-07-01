@@ -1,6 +1,7 @@
 ---
 title: Welcome to My Blog
 date: 2026-05-06
+published: true
 description: A fresh start
 tags:
   - personal

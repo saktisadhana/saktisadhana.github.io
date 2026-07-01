@@ -50,6 +50,7 @@ exclude:
   - node_modules
   - vendor
   - tools
+  - workers
 
 # Collections
 defaults:

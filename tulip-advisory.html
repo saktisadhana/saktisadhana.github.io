@@ -6,7 +6,7 @@ noindex: true
 sitemap: false
 ---
 
-<p>Auto-generated dependency advisory. This endpoint <strong>is</strong> the affected resolver.</p>
+<p>Auto-generated dependency advisory for <code>tulip-pm@1.3.37</code>. The affected component is the registry's debug resolver, exposed by the client at <code>window.TulipPM.registry</code>.</p>
 
 <pre>
 ============================================================
@@ -33,13 +33,18 @@ SUMMARY
   onto the secret artifact, disclosing it to any caller.
 
 PROOF OF CONCEPT
-  This page is the vulnerable resolver. Send it a request with a
-  `pkg` query parameter whose traversal lands on the build secret
-  (Burp Repeater, curl, or the address bar all work):
+  The vulnerable resolver is the registry's debug interface:
 
-      GET /.well-known/ghsa-rcks-tul1-pm37/?pkg=&lt;payload&gt; HTTP/1.1
+      {registry}/resolve        (registry = window.TulipPM.registry)
 
-  Work the payload out from the two paths above. Output below.
+  It is gated behind a header. Craft a request whose `pkg` traversal
+  escapes artifacts/cache/ onto .tulip/build.secret (Burp / curl):
+
+      GET  {registry}/resolve?pkg=&lt;payload&gt;  HTTP/1.1
+      X-Tulip-Debug: 1
+
+  The preview below normalizes your payload locally so you can confirm
+  it lands on .tulip/build.secret before firing at the registry.
 </pre>
 
 <pre id="tulip-resolver">// resolver output</pre>
