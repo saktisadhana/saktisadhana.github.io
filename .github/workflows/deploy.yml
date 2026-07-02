@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Build with the project's own Gemfile/Gemfile.lock so CI matches local dev.
       - name: Setup Ruby
