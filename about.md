@@ -21,5 +21,7 @@ This site serves as my portfolio and knowledge base. Here you'll find detailed w
 ### Elsewhere
 
 - [GitHub](https://github.com/saktisadhana)
+- [Instagram](https://instagram.com/sakti.putu)
+- Discord: `rocksfvcker`
 
 Feel free to reach out.

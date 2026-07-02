@@ -9,8 +9,9 @@ function initNavToggle() {
   var links = document.getElementById('nav-links');
   if (!toggle || !links) return;
   toggle.addEventListener('click', function () {
-    toggle.classList.toggle('open');
-    links.classList.toggle('open');
+    var open = toggle.classList.toggle('open');
+    links.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', String(open));
   });
 }
 
@@ -61,6 +62,14 @@ function initProseReveal() {
   els.forEach(function (el) { observer.observe(el); });
 }
 
+// Copy text to the clipboard, resolving to true/false so callers can show feedback
+function copyText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return false; });
+  }
+  return Promise.resolve(false);
+}
+
 // Copy button on code blocks
 function initCopyButtons() {
   document.querySelectorAll('.prose pre').forEach(function (pre) {
@@ -69,9 +78,9 @@ function initCopyButtons() {
     btn.textContent = 'copy';
     btn.addEventListener('click', function () {
       var code = pre.querySelector('code') || pre;
-      navigator.clipboard.writeText(code.innerText).then(function () {
-        btn.textContent = 'copied!';
-        btn.classList.add('copied');
+      copyText(code.innerText).then(function (ok) {
+        btn.textContent = ok ? 'copied!' : 'failed';
+        if (ok) btn.classList.add('copied');
         setTimeout(function () {
           btn.textContent = 'copy';
           btn.classList.remove('copied');
@@ -153,9 +162,9 @@ function initShareBtn() {
   var btn = document.getElementById('share-btn');
   if (!btn) return;
   btn.addEventListener('click', function () {
-    navigator.clipboard.writeText(window.location.href).then(function () {
-      btn.textContent = 'Copied!';
-      btn.classList.add('copied');
+    copyText(window.location.href).then(function (ok) {
+      btn.textContent = ok ? 'Copied!' : 'Copy failed';
+      if (ok) btn.classList.add('copied');
       setTimeout(function () {
         btn.textContent = 'Copy link';
         btn.classList.remove('copied');
@@ -170,16 +179,27 @@ function initSearch() {
   var list = document.getElementById('post-list');
   var empty = document.getElementById('search-empty');
   if (!input || !list) return;
+  var cloud = document.getElementById('blog-cloud');
+  var groups = list.querySelectorAll('.blog-group');
 
   input.addEventListener('input', function () {
     var q = input.value.toLowerCase().trim();
     var items = list.querySelectorAll('li[data-title]');
     var visible = 0;
     items.forEach(function (item) {
-      var match = !q || item.dataset.title.includes(q) || (item.dataset.tags || '').includes(q);
+      var match = !q || item.dataset.title.includes(q) || (item.dataset.tags || '').includes(q) || (item.dataset.playlist || '').includes(q);
       item.style.display = match ? '' : 'none';
       if (match) visible++;
     });
+    // In the grouped (blog) view, hide any series section with no visible posts.
+    groups.forEach(function (group) {
+      var shown = 0;
+      group.querySelectorAll('li[data-title]').forEach(function (li) {
+        if (li.style.display !== 'none') shown++;
+      });
+      group.style.display = shown ? '' : 'none';
+    });
+    if (cloud) cloud.style.display = q ? 'none' : '';
     if (empty) empty.classList.toggle('is-hidden', !(visible === 0 && q));
   });
 }

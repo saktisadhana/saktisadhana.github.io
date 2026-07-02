@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # Ruby gems (Jekyll + plugins) pinned in Gemfile.lock
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # GitHub Actions used by the deploy workflow
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5

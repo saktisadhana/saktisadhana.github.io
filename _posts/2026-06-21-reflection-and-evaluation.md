@@ -6,13 +6,10 @@ description: What a year...
 tags:
   - personal
   - meta
+playlist:
 ---
 
-**Om Awigenam Astu Nama Sidem**, what a year it 
-
-## 4.1 Luas Antara Dua Kurva
-
-Bab ini 
+**Om Awigenam Astu Nama Sidem**, what a year it has been.
 
 ## What to expect
 
@@ -26,7 +23,7 @@ Nothing fancy. Just honest writing about things I'm working through.
 
 ## The stack
 
-This blog runs on [Jekyll](https://jekyllrb.com/) and is hosted on [Netlify](https://netlify.com). I manage content through [Decap CMS](https://decapcms.org/): a free, open-source CMS that commits directly to the Git repo.
+This blog runs on [Jekyll](https://jekyllrb.com/) and is hosted on [GitHub Pages](https://pages.github.com/), built and deployed automatically by GitHub Actions on every push. I manage content through [Decap CMS](https://decapcms.org/): a free, open-source CMS that commits directly to the Git repo.
 
 No frameworks. No build tools. Just markdown, HTML, and CSS.
 

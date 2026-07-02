@@ -13,13 +13,14 @@ author:
 lang: en
 
 # SEO (jekyll-seo-tag)
-# Verify the site in Google Search Console, then paste the token below and uncomment
-# so search engines index it. (Bing: bing_site_verification.)
-# google_site_verification: "your-token-here"
+# Google Search Console verification is done via the googlec6412d216ddcfb6f.html
+# file at the site root (HTML-file method), so no meta token is needed here.
+# If you ever switch to the meta-tag method, add: google_site_verification: "<token>"
 social:
   name: Sakti Sadhana
   links:
     - https://github.com/saktisadhana
+    - https://instagram.com/sakti.putu
 # Default social-share image (1200x630 PNG). Used on any page without a per-page og_image.
 og_image: /assets/og-default.png
 
@@ -27,6 +28,11 @@ og_image: /assets/og-default.png
 markdown: kramdown
 highlighter: rouge
 permalink: /blog/:title/
+
+# Cache-busting for CSS/JS. Bump this by 1 whenever you edit main.css or main.js
+# so returning visitors pick up the change; unchanged builds keep the same value
+# so browsers can cache the assets long-term.
+asset_version: 2
 
 # Plugins
 plugins:
@@ -37,7 +43,8 @@ plugins:
 # Collections
 collections:
   projects:
-    output: false
+    output: true
+    permalink: /projects/:title/
   writeups:
     output: true
     permalink: /writeups/:title/
@@ -51,6 +58,7 @@ exclude:
   - vendor
   - tools
   - workers
+  - serve.bat
 
 # Collections
 defaults:
@@ -73,6 +81,11 @@ defaults:
       layout: "writeup"
       seo:
         type: BlogPosting
+  - scope:
+      path: ""
+      type: "projects"
+    values:
+      layout: "project"
 
 # Feed
 feed:
@@ -80,6 +93,9 @@ feed:
   collections:
     writeups:
       path: "/feed/writeups.xml"
+
+# Playlist descriptions — keyed by playlist name (must match exactly)
+playlist_descriptions: {}
 
 # Tag descriptions
 tag_descriptions:

@@ -15,35 +15,62 @@ nav_match_layout: post
 <input class="search-input" id="search-input" type="search" placeholder="Search posts…" aria-label="Search posts">
 <p class="search-empty is-hidden" id="search-empty">No posts match your search.</p>
 
-<ul class="post-list" id="post-list">
-  {% for post in site.posts %}
-  <li class="post-list__item fade-in" data-title="{{ post.title | downcase }}" data-tags="{{ post.tags | join: ' ' | downcase }}">
-    <a href="{{ post.url | relative_url }}" class="post-list__link{% if post.og_image %} post-list__link--has-thumb{% endif %}">
-      <div class="post-list__body">
-        <div class="post-list__meta">
-          <time class="post-list__date" datetime="{{ post.date | date_to_xmlschema }}">
-            {{ post.date | date: "%b %d, %Y" }}
-          </time>
-          <span class="post-list__sep">·</span>
-          <span class="post-list__readtime">{% include reading-time.html content=post.content %} min</span>
-        </div>
-        <h2 class="post-list__title">{{ post.title }}</h2>
-        {% if post.description %}
-        <p class="post-list__desc">{{ post.description }}</p>
-        {% endif %}
-        {% if post.tags and post.tags.size > 0 %}
-        <div class="post-list__tags">
-          {% for tag in post.tags limit:3 %}<span class="tag">{{ tag }}</span>{% endfor %}
-        </div>
-        {% endif %}
-      </div>
-      {% if post.og_image %}
-      <img src="{{ post.og_image | relative_url }}" alt="{{ post.title }}" class="post-list__thumb" loading="lazy" decoding="async">
-      {% endif %}
-    </a>
-  </li>
+{% comment %} Collect unique playlists across posts. {% endcomment %}
+{% assign all_playlists = "" | split: "" %}
+{% for post in site.posts %}
+  {% if post.playlist and post.playlist != "" %}
+    {% unless all_playlists contains post.playlist %}{% assign all_playlists = all_playlists | push: post.playlist %}{% endunless %}
+  {% endif %}
+{% endfor %}
+{% assign all_playlists = all_playlists | sort %}
+{% assign ungrouped = site.posts | where_exp: "p", "p.playlist == nil or p.playlist == ''" %}
+
+<div class="tag-cloud" id="blog-cloud">
+  {% for pl in all_playlists %}
+  {% assign pl_posts = site.posts | where: "playlist", pl %}
+  <a href="#{{ pl | slugify }}" class="tag-cloud__item">{{ pl }} <span class="tag-cloud__count">{{ pl_posts.size }}</span></a>
   {% endfor %}
-</ul>
+  {% if ungrouped.size > 0 %}
+  <a href="#other" class="tag-cloud__item">Other <span class="tag-cloud__count">{{ ungrouped.size }}</span></a>
+  {% endif %}
+</div>
+
+<div class="tag-sections" id="post-list">
+  {% for pl in all_playlists %}
+  {% assign pl_posts = site.posts | where: "playlist", pl | sort: "date" %}
+  <section class="tag-section blog-group fade-in" id="{{ pl | slugify }}">
+    <h2 class="tag-section__title"># {{ pl }}</h2>
+    {% assign pl_desc = site.playlist_descriptions[pl] %}
+    {% if pl_desc %}<p class="tag-section__desc">{{ pl_desc }}</p>{% endif %}
+    <ol class="post-list playlist-index__list">
+      {% for post in pl_posts %}
+      <li class="post-list__item" data-title="{{ post.title | downcase }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-playlist="{{ post.playlist | downcase }}">
+        <a href="{{ post.url | relative_url }}" class="post-list__link">
+          <time class="post-list__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
+          <h3 class="post-list__title post-list__title--sm">{{ post.title }}</h3>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endfor %}
+
+  {% if ungrouped.size > 0 %}
+  <section class="tag-section blog-group fade-in" id="other">
+    <h2 class="tag-section__title"># Other</h2>
+    <ul class="post-list">
+      {% for post in ungrouped %}
+      <li class="post-list__item" data-title="{{ post.title | downcase }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-playlist="">
+        <a href="{{ post.url | relative_url }}" class="post-list__link">
+          <time class="post-list__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
+          <h3 class="post-list__title post-list__title--sm">{{ post.title }}</h3>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</div>
 {% else %}
 <p class="muted-note">No posts yet.</p>
 {% endif %}

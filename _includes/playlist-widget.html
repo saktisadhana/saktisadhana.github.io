@@ -1,0 +1,49 @@
+{% if page.playlist %}
+  {% assign pl_name = page.playlist %}
+  {% assign pl_posts = site.posts | where: "playlist", pl_name | sort: "date" %}
+  {% assign pl_writeups = site.writeups | where: "playlist", pl_name | sort: "date" %}
+  {% assign pl_all = pl_posts | concat: pl_writeups | sort: "date" %}
+  {% assign pl_total = pl_all | size %}
+  {% if pl_total > 0 %}
+  {% assign cur_idx = 0 %}
+  {% for p in pl_all %}{% if p.url == page.url %}{% assign cur_idx = forloop.index0 %}{% endif %}{% endfor %}
+  {% assign prev_idx = cur_idx | minus: 1 %}
+  {% assign next_idx = cur_idx | plus: 1 %}
+  {% assign last_idx = pl_total | minus: 1 %}
+
+  <aside class="playlist-widget" aria-label="Series: {{ pl_name }}">
+    <div class="playlist-widget__header">
+      <span class="playlist-widget__label">Series</span>
+      <strong class="playlist-widget__title">{{ pl_name }}</strong>
+      <span class="playlist-widget__count">{{ pl_total }} part{% if pl_total != 1 %}s{% endif %}</span>
+    </div>
+    {% assign pl_desc = site.playlist_descriptions[pl_name] %}
+    {% if pl_desc %}<p class="playlist-widget__desc">{{ pl_desc }}</p>{% endif %}
+    <ol class="playlist__list">
+      {% for p in pl_all %}
+      <li class="playlist__item{% if p.url == page.url %} playlist__item--current{% endif %}">
+        {% if p.url == page.url %}
+          <span>{{ p.title }}</span>
+        {% else %}
+          <a href="{{ p.url | relative_url }}">{{ p.title }}</a>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+    {% if pl_total > 1 %}
+    <nav class="playlist__nav">
+      {% if cur_idx > 0 %}
+        {% assign prev_post = pl_all[prev_idx] %}
+        <a class="playlist__nav-btn" href="{{ prev_post.url | relative_url }}">← {{ prev_post.title }}</a>
+      {% else %}
+        <span></span>
+      {% endif %}
+      {% if cur_idx < last_idx %}
+        {% assign next_post = pl_all[next_idx] %}
+        <a class="playlist__nav-btn playlist__nav-btn--next" href="{{ next_post.url | relative_url }}">{{ next_post.title }} →</a>
+      {% endif %}
+    </nav>
+    {% endif %}
+  </aside>
+  {% endif %}
+{% endif %}

@@ -1,0 +1,35 @@
+---
+layout: default
+---
+
+<div id="progress-bar"></div>
+
+<article class="project post">
+  <header class="post__header">
+    <h1 class="post__title">{{ page.title }}</h1>
+    {% if page.description %}
+    <p class="post__description">{{ page.description }}</p>
+    {% endif %}
+    {% if page.tech and page.tech.size > 0 %}
+    <div class="post__tags">
+      {% for t in page.tech %}<span class="tag">{{ t }}</span>{% endfor %}
+    </div>
+    {% endif %}
+    {% if page.repo or page.live %}
+    <div class="project__links">
+      {% if page.repo %}<a href="{{ page.repo }}" target="_blank" rel="noopener">GitHub ↗</a>{% endif %}
+      {% if page.live %}<a href="{{ page.live }}" target="_blank" rel="noopener">Live ↗</a>{% endif %}
+    </div>
+    {% endif %}
+  </header>
+
+  <div class="post__content prose">
+    {{ content | replace: '<img ', '<img loading="lazy" decoding="async" ' }}
+  </div>
+
+  <footer class="post__footer">
+    <a href="{{ '/projects' | relative_url }}" class="post__back">&larr; All projects</a>
+  </footer>
+</article>
+
+<button id="back-to-top" aria-label="Back to top">↑</button>

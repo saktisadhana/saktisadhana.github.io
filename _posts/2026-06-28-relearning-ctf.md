@@ -1,11 +1,13 @@
 ---
-title: Reflection and Evaluation
-date: 2026-06-21
+title: Relearning CTF
+date: 2026-06-28
 published: false
-description: What a year...
+description: Getting back into binary exploitation and reverse engineering — mapping out a learning path.
 tags:
-  - personal
-  - meta
+  - ctf
+  - binary
+  - security
+playlist:
 ---
 
 **Om Awigenam Astu Nama Sidem** I usually write in english but for this post im gonna use a mixture of Bahasa Indonesia and English, because why not :3

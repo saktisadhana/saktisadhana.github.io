@@ -19,7 +19,7 @@ nav_match_layout: writeup
 <ul class="post-list" id="post-list">
   {% assign sorted_writeups = site.writeups | sort: "date" | reverse %}
   {% for writeup in sorted_writeups %}
-  <li class="post-list__item fade-in" data-title="{{ writeup.title | downcase }}" data-tags="{{ writeup.tags | join: ' ' | downcase }}">
+  <li class="post-list__item fade-in" data-title="{{ writeup.title | downcase }}" data-tags="{{ writeup.tags | join: ' ' | downcase }}" data-playlist="{{ writeup.playlist | downcase }}">
     <a href="{{ writeup.url | relative_url }}" class="post-list__link{% if writeup.og_image %} post-list__link--has-thumb{% endif %}">
       <div class="post-list__body">
         <div class="post-list__meta-row">

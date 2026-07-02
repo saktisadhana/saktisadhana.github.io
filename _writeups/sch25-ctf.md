@@ -9,7 +9,7 @@ tags:
   - web
   - cryptography
   - forensics
-published: false
+published: true
 ---
 
 Complete writeup for the Schematics 2025 CTF competition where we manage to solve a couple of the easy web exploitation, cryptography, and forensics challenges.

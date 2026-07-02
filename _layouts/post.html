@@ -25,6 +25,8 @@ layout: default
     {% endif %}
   </header>
 
+  {% include playlist-widget.html %}
+
   <div class="post__content prose">
     {{ content | replace: '<img ', '<img loading="lazy" decoding="async" ' }}
   </div>
