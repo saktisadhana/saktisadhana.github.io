@@ -3,7 +3,7 @@ layout: page
 title: About
 permalink: /about/
 nav: true
-nav_order: 5
+nav_order: 6
 ---
 
 I'm **Sakti Sadhana**, an IT undergraduate with a passion for cybersecurity and CTF competitions. I believe in learning by doing, breaking things, and documenting the journey.

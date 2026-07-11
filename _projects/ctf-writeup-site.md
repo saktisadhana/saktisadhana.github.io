@@ -9,5 +9,6 @@ tech:
   - Vanilla JS
 repo: https://github.com/saktisadhana/saktisadhana.github.io
 live: https://saktisadhana.github.io
+readmore: false
 order: 2
 ---

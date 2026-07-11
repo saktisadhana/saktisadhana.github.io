@@ -6,7 +6,6 @@ description: What a year...
 tags:
   - personal
   - meta
-playlist:
 ---
 
 **Om Awigenam Astu Nama Sidem**, what a year it has been.

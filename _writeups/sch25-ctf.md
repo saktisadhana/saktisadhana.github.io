@@ -1,7 +1,7 @@
 ---
-title: SCH25 CTF Challenge
+title: Schematics 2025 CTF
 date: 2025-01-15
-description: Complete writeup for the SCH25 CTF competition. Detailed solutions covering web exploitation, cryptography, and forensics challenges.
+description: One of if not the hardest CTF Probset i've ever gone through...
 event: SCH25 CTF Competition
 team: XxSaktihengkerwibuTzyxX
 pdf: /assets/uploads/SCH25_CTF_XxSaktihengkerwibuTzyxX.pdf

@@ -20,7 +20,8 @@ collections:
       - { label: "Show on site", name: "published", widget: "boolean", default: true, hint: "Turn off to hide this post from the site (draft)." }
       - { label: "Description", name: "description", widget: "string", required: false }
       - { label: "Tags", name: "tags", widget: "list", required: false }
-      - { label: "Playlist", name: "playlist", widget: "string", required: false, hint: "Series name — groups this post with others in the same series (e.g. 'Learning Rust')." }
+      - { label: "Series / Playlists", name: "playlists", widget: "list", required: false, hint: "One or more series this post belongs to. Each must match a Playlist's title exactly." }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false, hint: "Give this post a highlighted 'featured' look in listings." }
       - { label: "Social Image", name: "og_image", widget: "image", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
 
@@ -39,7 +40,8 @@ collections:
       - { label: "PDF File", name: "pdf", widget: "file", required: false }
       - { label: "Social Image", name: "og_image", widget: "image", required: false }
       - { label: "Tags", name: "tags", widget: "list", required: false }
-      - { label: "Playlist", name: "playlist", widget: "string", required: false, hint: "Series name — groups this writeup with others in the same series." }
+      - { label: "Series / Playlists", name: "playlists", widget: "list", required: false, hint: "One or more series this writeup belongs to. Each must match a Playlist's title exactly." }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false, hint: "Give this writeup a highlighted 'featured' look in listings." }
       - { label: "Body", name: "body", widget: "markdown" }
 
   - name: "projects"
@@ -53,8 +55,22 @@ collections:
       - { label: "Tech Stack", name: "tech", widget: "list", required: false }
       - { label: "GitHub URL", name: "repo", widget: "string", required: false }
       - { label: "Live URL", name: "live", widget: "string", required: false }
+      - { label: "Enable read-more page", name: "readmore", widget: "boolean", default: true, required: false, hint: "When on, the card links to a detail page built from the body below (shows a → arrow). Turn off for a non-clickable card." }
       - { label: "Sort Order", name: "order", widget: "number", default: 99, required: false }
       - { label: "Body", name: "body", widget: "markdown", required: false, hint: "Full write-up shown on the project's detail page." }
+
+  - name: "playlists"
+    label: "Playlists / Series"
+    folder: "_playlists"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string", hint: "Must match exactly the series name typed in a post/writeup's Playlists field." }
+      - { label: "Description", name: "description", widget: "string", required: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false, hint: "Give this playlist a highlighted 'featured' look on the Playlists page." }
+      - { label: "Cover Image", name: "cover", widget: "image", required: false, hint: "Optional thumbnail shown in the playlist page header." }
+      - { label: "Sort Order", name: "order", widget: "number", default: 99, required: false }
+      - { label: "Body", name: "body", widget: "markdown", required: false, hint: "Optional intro shown above the list on the playlist page." }
 
   - name: "pages"
     label: "Pages"

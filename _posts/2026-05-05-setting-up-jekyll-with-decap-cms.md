@@ -6,7 +6,8 @@ description: "A quick walkthrough of how this blog is set up: Jekyll, Netlify, a
 tags:
   - tutorial
   - jekyll
-playlist: "Building This Blog"
+playlists:
+  - "Building This Blog"
 ---
 
 If you're reading this, the setup worked. Here's how it's put together.

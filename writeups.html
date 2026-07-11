@@ -16,37 +16,88 @@ nav_match_layout: writeup
 <input class="search-input" id="search-input" type="search" placeholder="Search writeups…" aria-label="Search writeups">
 <p class="search-empty is-hidden" id="search-empty">No writeups match your search.</p>
 
-<ul class="post-list" id="post-list">
-  {% assign sorted_writeups = site.writeups | sort: "date" | reverse %}
-  {% for writeup in sorted_writeups %}
-  <li class="post-list__item fade-in" data-title="{{ writeup.title | downcase }}" data-tags="{{ writeup.tags | join: ' ' | downcase }}" data-playlist="{{ writeup.playlist | downcase }}">
-    <a href="{{ writeup.url | relative_url }}" class="post-list__link{% if writeup.og_image %} post-list__link--has-thumb{% endif %}">
-      <div class="post-list__body">
-        <div class="post-list__meta-row">
-          <time class="post-list__date" datetime="{{ writeup.date | date_to_xmlschema }}">
-            {{ writeup.date | date: "%b %d, %Y" }}
-          </time>
-          {% if writeup.event %}
-          <span class="post-list__event">{{ writeup.event }}</span>
-          {% endif %}
-        </div>
-        <h2 class="post-list__title">{{ writeup.title }}</h2>
-        {% if writeup.description %}
-        <p class="post-list__desc">{{ writeup.description }}</p>
-        {% endif %}
-        {% if writeup.tags and writeup.tags.size > 0 %}
-        <div class="post-list__tags">
-          {% for tag in writeup.tags limit:3 %}<span class="tag">{{ tag }}</span>{% endfor %}
-        </div>
-        {% endif %}
-      </div>
-      {% if writeup.og_image %}
-      <img src="{{ writeup.og_image | relative_url }}" alt="{{ writeup.title }}" class="post-list__thumb" loading="lazy" decoding="async">
-      {% endif %}
-    </a>
-  </li>
+{% comment %} Collect unique playlists across every writeup's `playlists` list. {% endcomment %}
+{% assign all_playlists = "" | split: "" %}
+{% for w in site.writeups %}
+  {% for pl in w.playlists %}
+    {% unless all_playlists contains pl %}{% assign all_playlists = all_playlists | push: pl %}{% endunless %}
   {% endfor %}
-</ul>
+{% endfor %}
+{% assign all_playlists = all_playlists | sort %}
+{% assign ungrouped = site.writeups | where_exp: "w", "w.playlists == nil or w.playlists.size == 0" %}
+
+{% if all_playlists.size > 0 %}
+<div class="tag-cloud" id="blog-cloud">
+  {% for pl in all_playlists %}
+  {% assign pl_w = site.writeups | where_exp: "w", "w.playlists contains pl" %}
+  <a href="#{{ pl | slugify }}" class="tag-cloud__item">{{ pl }} <span class="tag-cloud__count">{{ pl_w.size }}</span></a>
+  {% endfor %}
+  {% if ungrouped.size > 0 %}
+  <a href="#other" class="tag-cloud__item">Other <span class="tag-cloud__count">{{ ungrouped.size }}</span></a>
+  {% endif %}
+</div>
+{% endif %}
+
+<div class="tag-sections" id="post-list">
+  {% for pl in all_playlists %}
+  {% assign pl_w = site.writeups | where_exp: "w", "w.playlists contains pl" | sort: "date" %}
+  {% assign pl_doc = site.playlists | where: "title", pl | first %}
+  <section class="tag-section blog-group fade-in" id="{{ pl | slugify }}">
+    <h2 class="tag-section__title"># {% if pl_doc %}<a href="{{ pl_doc.url | relative_url }}">{{ pl }}</a>{% else %}{{ pl }}{% endif %}</h2>
+    {% assign pl_desc = pl_doc.description | default: site.playlist_descriptions[pl] %}
+    {% if pl_desc %}<p class="tag-section__desc">{{ pl_desc }}</p>{% endif %}
+    <ol class="post-list playlist-index__list">
+      {% for writeup in pl_w %}
+      <li class="post-list__item{% if writeup.featured %} post-list__item--featured{% endif %}" data-title="{{ writeup.title | downcase }}" data-tags="{{ writeup.tags | join: ' ' | downcase }}" data-playlist="{{ writeup.playlists | join: ' ' | downcase }}">
+        <a href="{{ writeup.url | relative_url }}" class="post-list__link">
+          <time class="post-list__date" datetime="{{ writeup.date | date_to_xmlschema }}">{{ writeup.date | date: "%b %d, %Y" }}</time>
+          <h3 class="post-list__title post-list__title--sm">{{ writeup.title }}{% if writeup.event %} <span class="post-list__event">{{ writeup.event }}</span>{% endif %}{% if writeup.featured %} <span class="badge-featured">★ Featured</span>{% endif %}</h3>
+        </a>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endfor %}
+
+  {% comment %} Standalone writeups (no series) keep the richer card layout. {% endcomment %}
+  {% if ungrouped.size > 0 %}
+  <section class="tag-section blog-group fade-in" id="other">
+    {% if all_playlists.size > 0 %}<h2 class="tag-section__title"># Other</h2>{% endif %}
+    <ul class="post-list">
+      {% assign sorted_ungrouped = ungrouped | sort: "date" | reverse %}
+      {% for writeup in sorted_ungrouped %}
+      <li class="post-list__item fade-in{% if writeup.featured %} post-list__item--featured{% endif %}" data-title="{{ writeup.title | downcase }}" data-tags="{{ writeup.tags | join: ' ' | downcase }}" data-playlist="{{ writeup.playlists | join: ' ' | downcase }}">
+        <a href="{{ writeup.url | relative_url }}" class="post-list__link{% if writeup.og_image %} post-list__link--has-thumb{% endif %}">
+          <div class="post-list__body">
+            <div class="post-list__meta-row">
+              <time class="post-list__date" datetime="{{ writeup.date | date_to_xmlschema }}">
+                {{ writeup.date | date: "%b %d, %Y" }}
+              </time>
+              {% if writeup.event %}
+              <span class="post-list__event">{{ writeup.event }}</span>
+              {% endif %}
+              {% if writeup.featured %}<span class="badge-featured">★ Featured</span>{% endif %}
+            </div>
+            <h2 class="post-list__title">{{ writeup.title }}</h2>
+            {% if writeup.description %}
+            <p class="post-list__desc">{{ writeup.description }}</p>
+            {% endif %}
+            {% if writeup.tags and writeup.tags.size > 0 %}
+            <div class="post-list__tags">
+              {% for tag in writeup.tags limit:3 %}<span class="tag">{{ tag }}</span>{% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          {% if writeup.og_image %}
+          <img src="{{ writeup.og_image | relative_url }}" alt="{{ writeup.title }}" class="post-list__thumb" loading="lazy" decoding="async">
+          {% endif %}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</div>
 {% else %}
 <p class="muted-note">No writeups yet.</p>
 {% endif %}

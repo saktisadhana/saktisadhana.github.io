@@ -1,7 +1,12 @@
-{% if page.playlist %}
-  {% assign pl_name = page.playlist %}
-  {% assign pl_posts = site.posts | where: "playlist", pl_name | sort: "date" %}
-  {% assign pl_writeups = site.writeups | where: "playlist", pl_name | sort: "date" %}
+{%- comment -%}
+  Series widget. A post/writeup can belong to multiple playlists, so render one
+  block per entry in `page.playlists`. Each block lists that series' parts and a
+  prev/next nav, and links its title to the playlist's own page.
+{%- endcomment -%}
+{% if page.playlists and page.playlists.size > 0 %}
+  {% for pl_name in page.playlists %}
+  {% assign pl_posts = site.posts | where_exp: "p", "p.playlists contains pl_name" %}
+  {% assign pl_writeups = site.writeups | where_exp: "w", "w.playlists contains pl_name" %}
   {% assign pl_all = pl_posts | concat: pl_writeups | sort: "date" %}
   {% assign pl_total = pl_all | size %}
   {% if pl_total > 0 %}
@@ -10,14 +15,19 @@
   {% assign prev_idx = cur_idx | minus: 1 %}
   {% assign next_idx = cur_idx | plus: 1 %}
   {% assign last_idx = pl_total | minus: 1 %}
+  {% assign pl_doc = site.playlists | where: "title", pl_name | first %}
 
   <aside class="playlist-widget" aria-label="Series: {{ pl_name }}">
     <div class="playlist-widget__header">
       <span class="playlist-widget__label">Series</span>
+      {% if pl_doc %}
+      <strong class="playlist-widget__title"><a href="{{ pl_doc.url | relative_url }}">{{ pl_name }}</a></strong>
+      {% else %}
       <strong class="playlist-widget__title">{{ pl_name }}</strong>
+      {% endif %}
       <span class="playlist-widget__count">{{ pl_total }} part{% if pl_total != 1 %}s{% endif %}</span>
     </div>
-    {% assign pl_desc = site.playlist_descriptions[pl_name] %}
+    {% assign pl_desc = pl_doc.description | default: site.playlist_descriptions[pl_name] %}
     {% if pl_desc %}<p class="playlist-widget__desc">{{ pl_desc }}</p>{% endif %}
     <ol class="playlist__list">
       {% for p in pl_all %}
@@ -46,4 +56,5 @@
     {% endif %}
   </aside>
   {% endif %}
+  {% endfor %}
 {% endif %}

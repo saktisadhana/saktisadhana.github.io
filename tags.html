@@ -3,7 +3,7 @@ layout: default
 title: Tags
 permalink: /tags/
 nav: true
-nav_order: 4
+nav_order: 5
 ---
 
 <div class="blog-header">
@@ -39,12 +39,12 @@ nav_order: 4
     {% if desc %}<p class="tag-section__desc">{{ desc }}</p>{% endif %}
     <ul class="post-list">
       {% for item in tagged %}
-      <li class="post-list__item">
+      <li class="post-list__item{% if item.featured %} post-list__item--featured{% endif %}">
         <a href="{{ item.url | relative_url }}" class="post-list__link">
           <time class="post-list__date" datetime="{{ item.date | date_to_xmlschema }}">
             {{ item.date | date: "%b %d, %Y" }}
           </time>
-          <h3 class="post-list__title post-list__title--sm">{{ item.title }}</h3>
+          <h3 class="post-list__title post-list__title--sm">{{ item.title }}{% if item.featured %} <span class="badge-featured">★ Featured</span>{% endif %}</h3>
         </a>
       </li>
       {% endfor %}

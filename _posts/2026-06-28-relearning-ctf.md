@@ -7,7 +7,6 @@ tags:
   - ctf
   - binary
   - security
-playlist:
 ---
 
 **Om Awigenam Astu Nama Sidem** I usually write in english but for this post im gonna use a mixture of Bahasa Indonesia and English, because why not :3

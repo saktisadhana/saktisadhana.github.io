@@ -15,19 +15,19 @@ nav_match_layout: post
 <input class="search-input" id="search-input" type="search" placeholder="Search posts…" aria-label="Search posts">
 <p class="search-empty is-hidden" id="search-empty">No posts match your search.</p>
 
-{% comment %} Collect unique playlists across posts. {% endcomment %}
+{% comment %} Collect unique playlists across every post's `playlists` list. {% endcomment %}
 {% assign all_playlists = "" | split: "" %}
 {% for post in site.posts %}
-  {% if post.playlist and post.playlist != "" %}
-    {% unless all_playlists contains post.playlist %}{% assign all_playlists = all_playlists | push: post.playlist %}{% endunless %}
-  {% endif %}
+  {% for pl in post.playlists %}
+    {% unless all_playlists contains pl %}{% assign all_playlists = all_playlists | push: pl %}{% endunless %}
+  {% endfor %}
 {% endfor %}
 {% assign all_playlists = all_playlists | sort %}
-{% assign ungrouped = site.posts | where_exp: "p", "p.playlist == nil or p.playlist == ''" %}
+{% assign ungrouped = site.posts | where_exp: "p", "p.playlists == nil or p.playlists.size == 0" %}
 
 <div class="tag-cloud" id="blog-cloud">
   {% for pl in all_playlists %}
-  {% assign pl_posts = site.posts | where: "playlist", pl %}
+  {% assign pl_posts = site.posts | where_exp: "p", "p.playlists contains pl" %}
   <a href="#{{ pl | slugify }}" class="tag-cloud__item">{{ pl }} <span class="tag-cloud__count">{{ pl_posts.size }}</span></a>
   {% endfor %}
   {% if ungrouped.size > 0 %}
@@ -37,17 +37,18 @@ nav_match_layout: post
 
 <div class="tag-sections" id="post-list">
   {% for pl in all_playlists %}
-  {% assign pl_posts = site.posts | where: "playlist", pl | sort: "date" %}
+  {% assign pl_posts = site.posts | where_exp: "p", "p.playlists contains pl" | sort: "date" %}
+  {% assign pl_doc = site.playlists | where: "title", pl | first %}
   <section class="tag-section blog-group fade-in" id="{{ pl | slugify }}">
-    <h2 class="tag-section__title"># {{ pl }}</h2>
-    {% assign pl_desc = site.playlist_descriptions[pl] %}
+    <h2 class="tag-section__title"># {% if pl_doc %}<a href="{{ pl_doc.url | relative_url }}">{{ pl }}</a>{% else %}{{ pl }}{% endif %}</h2>
+    {% assign pl_desc = pl_doc.description | default: site.playlist_descriptions[pl] %}
     {% if pl_desc %}<p class="tag-section__desc">{{ pl_desc }}</p>{% endif %}
     <ol class="post-list playlist-index__list">
       {% for post in pl_posts %}
-      <li class="post-list__item" data-title="{{ post.title | downcase }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-playlist="{{ post.playlist | downcase }}">
+      <li class="post-list__item{% if post.featured %} post-list__item--featured{% endif %}" data-title="{{ post.title | downcase }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-playlist="{{ post.playlists | join: ' ' | downcase }}">
         <a href="{{ post.url | relative_url }}" class="post-list__link">
           <time class="post-list__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
-          <h3 class="post-list__title post-list__title--sm">{{ post.title }}</h3>
+          <h3 class="post-list__title post-list__title--sm">{{ post.title }}{% if post.featured %} <span class="badge-featured">★ Featured</span>{% endif %}</h3>
         </a>
       </li>
       {% endfor %}
@@ -60,10 +61,10 @@ nav_match_layout: post
     <h2 class="tag-section__title"># Other</h2>
     <ul class="post-list">
       {% for post in ungrouped %}
-      <li class="post-list__item" data-title="{{ post.title | downcase }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-playlist="">
+      <li class="post-list__item{% if post.featured %} post-list__item--featured{% endif %}" data-title="{{ post.title | downcase }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-playlist="{{ post.playlists | join: ' ' | downcase }}">
         <a href="{{ post.url | relative_url }}" class="post-list__link">
           <time class="post-list__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %d, %Y" }}</time>
-          <h3 class="post-list__title post-list__title--sm">{{ post.title }}</h3>
+          <h3 class="post-list__title post-list__title--sm">{{ post.title }}{% if post.featured %} <span class="badge-featured">★ Featured</span>{% endif %}</h3>
         </a>
       </li>
       {% endfor %}

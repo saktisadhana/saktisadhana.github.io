@@ -1,0 +1,60 @@
+---
+layout: default
+---
+
+{%- comment -%}
+  Playlist page: lists every post/writeup whose `playlists` list contains this
+  playlist's title, YouTube-style (numbered episodes + thumbnails).
+{%- endcomment -%}
+{% assign items = site.posts | concat: site.writeups | where_exp: "i", "i.playlists contains page.title" | sort: "date" %}
+{% assign count = items | size %}
+{% assign total_words = 0 %}
+{% for i in items %}{% assign w = i.content | number_of_words %}{% assign total_words = total_words | plus: w %}{% endfor %}
+{% assign total_min = total_words | divided_by: 200 %}
+{% if total_min < 1 %}{% assign total_min = 1 %}{% endif %}
+
+<article class="playlist-page">
+  <a href="{{ '/playlists' | relative_url }}" class="post__back post__back--top">&larr; All playlists</a>
+
+  <header class="playlist-page__header{% if page.featured %} is-featured{% endif %}">
+    {% if page.cover %}
+    <img src="{{ page.cover | relative_url }}" alt="{{ page.title }}" class="playlist-page__cover" loading="lazy" decoding="async">
+    {% endif %}
+    <div class="playlist-page__head-body">
+      <span class="playlist-widget__label">Playlist{% if page.featured %} · Featured{% endif %}</span>
+      <h1 class="playlist-page__title">{{ page.title }}</h1>
+      {% if page.description %}<p class="playlist-page__desc">{{ page.description }}</p>{% endif %}
+      <p class="playlist-page__stats">{{ count }} part{% if count != 1 %}s{% endif %} · {{ total_min }} min total</p>
+    </div>
+  </header>
+
+  {% assign body = content | strip %}
+  {% if body != "" %}
+  <div class="prose playlist-page__intro">{{ content }}</div>
+  {% endif %}
+
+  {% if count > 0 %}
+  <ol class="post-list playlist-index__list playlist-page__list">
+    {% for item in items %}
+    <li class="post-list__item{% if item.featured %} post-list__item--featured{% endif %}">
+      <a href="{{ item.url | relative_url }}" class="post-list__link{% if item.og_image %} post-list__link--has-thumb{% endif %}">
+        <div class="post-list__body">
+          <div class="post-list__meta">
+            <time class="post-list__date" datetime="{{ item.date | date_to_xmlschema }}">{{ item.date | date: "%b %d, %Y" }}</time>
+            <span class="post-list__sep">·</span>
+            <span class="post-list__readtime">{% include reading-time.html content=item.content %} min</span>
+            {% if item.featured %}<span class="badge-featured">★ Featured</span>{% endif %}
+          </div>
+          <h2 class="post-list__title post-list__title--sm">{{ item.title }}</h2>
+        </div>
+        {% if item.og_image %}
+        <img src="{{ item.og_image | relative_url }}" alt="{{ item.title }}" class="post-list__thumb" loading="lazy" decoding="async">
+        {% endif %}
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+  {% else %}
+  <p class="muted-note">No posts in this playlist yet.</p>
+  {% endif %}
+</article>

@@ -429,6 +429,12 @@ img {
   color: var(--green);
 }
 
+/* Back link at the top of an article (so you don't have to scroll to the footer). */
+.post__back--top {
+  display: inline-block;
+  margin-bottom: var(--space-lg);
+}
+
 /* --- Page --- */
 .page__header {
   margin-bottom: var(--space-xl);
@@ -802,6 +808,15 @@ img {
   gap: var(--space-xl);
 }
 
+.tag-section__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.tag-section__title a:hover {
+  color: var(--green);
+}
+
 .tag-section__title {
   font-size: 1.1rem;
   font-weight: 600;
@@ -982,6 +997,15 @@ img {
 .playlist-widget__title {
   font-size: 0.95rem;
   font-weight: 600;
+}
+
+.playlist-widget__title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.playlist-widget__title a:hover {
+  color: var(--blue);
 }
 
 .playlist-widget__count {
@@ -1678,10 +1702,15 @@ input:focus-visible,
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.project-card:hover {
+.project-card:not(.project-card--static):hover {
   transform: translateY(-6px);
   border-color: var(--green);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--green);
+}
+
+/* Cards with readmore: false have no detail page — inert, no lift or pointer. */
+.project-card--static {
+  cursor: default;
 }
 
 .project-card__name {
@@ -1705,8 +1734,20 @@ input:focus-visible,
   z-index: 1;
 }
 
-.project-card:hover .project-card__name {
+.project-card:not(.project-card--static):hover .project-card__name {
   color: var(--green);
+}
+
+/* "Read more" arrow after a clickable card's title; nudges right on hover. */
+.project-card__more {
+  display: inline-block;
+  margin-left: 0.35em;
+  color: var(--green);
+  transition: transform 0.2s ease;
+}
+
+.project-card:not(.project-card--static):hover .project-card__more {
+  transform: translateX(4px);
 }
 
 .project-card__body {
@@ -1772,6 +1813,94 @@ input:focus-visible,
   content: " ↗";
   font-size: 0.75em;
   opacity: 0.6;
+}
+
+/* --- Featured flag (Series-widget visual language: blue accent + label) --- */
+.badge-featured {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: 999px;
+  padding: 0.05rem 0.5rem;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.post-list__item--featured {
+  border-left: 3px solid var(--blue);
+  background: var(--surface);
+  border-radius: 0 6px 6px 0;
+  padding-left: var(--space-md);
+}
+
+.project-card.is-featured {
+  border-color: var(--blue);
+  box-shadow: inset 3px 0 0 var(--blue);
+}
+
+.playlist-card__count {
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  margin: 0.5rem 0 0;
+}
+
+/* --- Playlist page (YouTube-style: header + numbered episodes) --- */
+.playlist-page__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+  align-items: flex-start;
+  margin: var(--space-md) 0 var(--space-xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.playlist-page__header.is-featured {
+  border-bottom: none;
+  border-left: 3px solid var(--blue);
+  background: var(--surface);
+  border-radius: 0 8px 8px 0;
+  padding: var(--space-lg);
+}
+
+.playlist-page__head-body {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.playlist-page__cover {
+  width: 160px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--gray-200);
+  flex-shrink: 0;
+}
+
+.playlist-page__title {
+  font-size: 1.6rem;
+  margin: 0.35rem 0 0.4rem;
+  letter-spacing: -0.02em;
+}
+
+.playlist-page__desc {
+  color: var(--gray-500);
+  margin: 0 0 0.5rem;
+  line-height: 1.55;
+}
+
+.playlist-page__stats {
+  font-size: 0.85rem;
+  color: var(--gray-400);
+  margin: 0;
+}
+
+.playlist-page__intro {
+  margin-bottom: var(--space-xl);
 }
 
 /* --- Responsive --- */

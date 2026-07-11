@@ -292,6 +292,9 @@ function initTocToggle() {
 // Heading anchor links
 function initHeadingAnchors() {
   document.querySelectorAll('.prose h2, .prose h3, .prose h4').forEach(function (h) {
+    // Project-card titles are <h2>s that live inside .prose but aren't article
+    // headings — skip them so they don't get a "#" anchor.
+    if (h.closest('.project-card')) return;
     if (!h.id) h.id = slugify(h.textContent);
     var a = document.createElement('a');
     a.href = '#' + h.id;

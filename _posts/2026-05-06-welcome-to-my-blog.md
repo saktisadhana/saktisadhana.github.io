@@ -6,7 +6,8 @@ description: A fresh start
 tags:
   - personal
   - meta
-playlist: "Building This Blog"
+playlists:
+  - "Building This Blog"
 ---
 
 I've been meaning to start writing for a while. Not because I think I have groundbreaking things to say, but because writing helps me think.

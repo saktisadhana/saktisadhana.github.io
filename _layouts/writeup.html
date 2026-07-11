@@ -7,6 +7,7 @@ layout: default
 
 {% include toc-sidebar.html %}
 <article class="writeup">
+  <a href="{{ '/writeups' | relative_url }}" class="post__back post__back--top">&larr; All writeups</a>
   <header class="post__header">
     <time class="post__date" datetime="{{ page.date | date_to_xmlschema }}">
       {{ page.date | date: "%B %d, %Y" }}

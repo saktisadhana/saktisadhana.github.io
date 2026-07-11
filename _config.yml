@@ -32,7 +32,7 @@ permalink: /blog/:title/
 # Cache-busting for CSS/JS. Bump this by 1 whenever you edit main.css or main.js
 # so returning visitors pick up the change; unchanged builds keep the same value
 # so browsers can cache the assets long-term.
-asset_version: 2
+asset_version: 5
 
 # Plugins
 plugins:
@@ -48,6 +48,9 @@ collections:
   writeups:
     output: true
     permalink: /writeups/:title/
+  playlists:
+    output: true
+    permalink: /playlists/:title/
 
 # Exclude from build
 exclude:
@@ -86,6 +89,11 @@ defaults:
       type: "projects"
     values:
       layout: "project"
+  - scope:
+      path: ""
+      type: "playlists"
+    values:
+      layout: "playlist"
 
 # Feed
 feed:

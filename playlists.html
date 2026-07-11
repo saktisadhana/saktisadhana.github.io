@@ -1,0 +1,29 @@
+---
+layout: page
+title: Playlists
+permalink: /playlists/
+nav: true
+nav_order: 4
+nav_match_layout: playlist
+---
+
+<p class="hero__sub">Series of posts and writeups, grouped like playlists.</p>
+
+{% if site.playlists and site.playlists.size > 0 %}
+<div class="project-grid playlist-grid">
+  {% assign sorted_playlists = site.playlists | sort: "order" %}
+  {% for pl in sorted_playlists %}
+  {% assign pl_items = site.posts | concat: site.writeups | where_exp: "i", "i.playlists contains pl.title" %}
+  <article class="project-card playlist-card fade-in{% if pl.featured %} is-featured{% endif %}">
+    <div class="project-card__body">
+      {% if pl.featured %}<span class="badge-featured">★ Featured</span>{% endif %}
+      <h2 class="project-card__name"><a class="project-card__link" href="{{ pl.url | relative_url }}">{{ pl.title }}<span class="project-card__more" aria-hidden="true">→</span></a></h2>
+      {% if pl.description %}<p class="project-card__desc">{{ pl.description }}</p>{% endif %}
+      <p class="playlist-card__count">{{ pl_items | size }} part{% if pl_items.size != 1 %}s{% endif %}</p>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<p class="muted-note">No playlists yet.</p>
+{% endif %}
