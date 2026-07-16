@@ -7,19 +7,30 @@ nav_order: 4
 nav_match_layout: playlist
 ---
 
-<p class="hero__sub">Series of posts and writeups, grouped like playlists.</p>
+<p class="hero__sub">Posts and writeups grouped into series.</p>
 
 {% if site.playlists and site.playlists.size > 0 %}
 <div class="project-grid playlist-grid">
   {% assign sorted_playlists = site.playlists | sort: "order" %}
   {% for pl in sorted_playlists %}
   {% assign pl_items = site.posts | concat: site.writeups | where_exp: "i", "i.playlists contains pl.title" %}
+  {% assign pl_count = pl_items | size %}
+  {% assign pl_latest = pl_items | sort: "date" | last %}
   <article class="project-card playlist-card fade-in{% if pl.featured %} is-featured{% endif %}">
     <div class="project-card__body">
-      {% if pl.featured %}<span class="badge-featured">★ Featured</span>{% endif %}
-      <h2 class="project-card__name"><a class="project-card__link" href="{{ pl.url | relative_url }}">{{ pl.title }}<span class="project-card__more" aria-hidden="true">→</span></a></h2>
+      <div class="playlist-card__kicker">
+        <span class="playlist-card__index" aria-hidden="true"></span>
+        <span class="playlist-card__label">series</span>
+        {% if pl.featured %}<span class="badge-featured">★ Featured</span>{% endif %}
+        <span class="playlist-card__count">{{ pl_count }} part{% if pl_count != 1 %}s{% endif %}</span>
+      </div>
+      <h2 class="project-card__name"><a class="project-card__link" href="{{ pl.url | relative_url }}">{{ pl.title }}</a></h2>
       {% if pl.description %}<p class="project-card__desc">{{ pl.description }}</p>{% endif %}
-      <p class="playlist-card__count">{{ pl_items | size }} part{% if pl_items.size != 1 %}s{% endif %}</p>
+      {% if pl_latest %}
+      <p class="playlist-card__latest">latest: {{ pl_latest.title }}<span class="playlist-card__latest-date"> · {{ pl_latest.date | date: "%b %Y" }}</span></p>
+      {% else %}
+      <p class="playlist-card__latest playlist-card__latest--empty">no parts yet</p>
+      {% endif %}
     </div>
   </article>
   {% endfor %}

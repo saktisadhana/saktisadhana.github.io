@@ -6,9 +6,9 @@ nav: true
 nav_order: 6
 ---
 
-I'm **Sakti Sadhana**, an IT undergraduate with a passion for cybersecurity and CTF competitions. I believe in learning by doing, breaking things, and documenting the journey.
+I'm **Sakti Sadhana**, an IT undergraduate into cybersecurity and CTF competitions. I mostly learn by breaking things and writing down what happened.
 
-This site serves as my portfolio and knowledge base. Here you'll find detailed writeups from CTF competitions, blog posts about security topics, and my ongoing exploration of the infosec world.
+This site is where I keep that: writeups from CTFs I've played, blog posts about security topics, and the security stuff I'm still working through.
 
 ---
 

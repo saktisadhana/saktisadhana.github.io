@@ -1,7 +1,7 @@
 ---
 title: "Daily CTF"
-description: "A running log of CTF practice — binary exploitation, reverse engineering, and whatever else I break that day."
+description: "Short notes from my daily CTF practice, mostly pwn and reverse engineering."
 order: 2
 ---
 
-Short, frequent write-ups from daily CTF practice.
+Small, frequent write-ups from whatever I'm practicing that day.

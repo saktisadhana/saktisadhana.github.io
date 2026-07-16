@@ -64,14 +64,21 @@
   --green: #3ddc84;
   --green-light: #1a2e23;
   --green-dark: #6ee7a8;
+  --green-rgb: 61, 220, 132;
   --blue: #85a8ea;
   --blue-dark: #094ece;
   --blue-rgb: 133, 168, 234;
+  --red: #ff6b6b;
+  --red-rgb: 255, 107, 107;
+  --amber: #f0b429;
+  --amber-rgb: 240, 180, 41;
   --gray-100: #1a1a1a;
   --gray-200: #222222;
   --gray-400: #555555;
   --gray-500: #888888;
   --gray-600: #b0b0b0;
+  /* Raised panel tint for "featured" surfaces (cards, series widget). */
+  --surface: #151515;
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -90,8 +97,17 @@
 
 /* --- View Transitions (progressive enhancement — no-op in unsupported browsers) --- */
 @view-transition { navigation: auto; }
-::view-transition-old(root) { animation-duration: 0.2s; }
-::view-transition-new(root) { animation-duration: 0.2s; }
+
+@keyframes vt-out {
+  to { opacity: 0; transform: translateY(-6px); }
+}
+
+@keyframes vt-in {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+::view-transition-old(root) { animation: vt-out 0.16s ease both; }
+::view-transition-new(root) { animation: vt-in 0.22s ease both; }
 .nav { view-transition-name: nav; }
 .hero { view-transition-name: hero; }
 @media (prefers-reduced-motion: reduce) {
@@ -192,11 +208,12 @@ img {
   font-weight: 450;
   padding: 4px 0 4px var(--space-sm);
   border-left: 2px solid transparent;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease, padding-left 0.2s ease;
 }
 
 .nav__links a:hover {
   color: var(--black);
+  padding-left: calc(var(--space-sm) + 4px);
 }
 
 .nav__links a.active {
@@ -417,16 +434,22 @@ img {
   margin-top: var(--space-2xl);
   padding-top: var(--space-lg);
   border-top: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .post__back {
   font-size: 0.875rem;
   color: var(--gray-500);
   font-weight: 450;
+  display: inline-block;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .post__back:hover {
   color: var(--green);
+  transform: translateX(-3px);
 }
 
 /* Back link at the top of an article (so you don't have to scroll to the footer). */
@@ -535,6 +558,7 @@ img {
 .copy-btn:hover {
   background: var(--gray-400);
   color: var(--black);
+  transform: translateY(-1px);
 }
 
 .copy-btn.copied {
@@ -599,8 +623,9 @@ img {
 
 .prose hr {
   border: none;
-  border-top: 1px solid var(--gray-200);
-  margin: 2em 0;
+  height: 1px;
+  margin: 2.5em 0;
+  background: linear-gradient(to right, transparent, var(--gray-400), transparent);
 }
 
 .prose img {
@@ -608,6 +633,28 @@ img {
   height: auto;
   border-radius: 4px;
   margin: 1.5em 0;
+}
+
+/* Markdown tables: centered on the page, shrink-to-fit their content. */
+.prose table {
+  margin: 1.5em auto;
+  max-width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid var(--gray-200);
+  padding: 6px 14px;
+  text-align: left;
+  color: var(--gray-600);
+}
+
+.prose th {
+  background: var(--gray-100);
+  color: var(--black);
+  font-weight: 600;
 }
 
 .prose a {
@@ -653,10 +700,13 @@ img {
 .footer__links a {
   color: var(--gray-400);
   font-size: 0.8rem;
+  display: inline-block;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .footer__links a:hover {
   color: var(--green);
+  transform: translateY(-2px);
 }
 
 .footer__sep {
@@ -750,6 +800,7 @@ img {
 
 .nav__theme-toggle:hover {
   color: var(--black);
+  transform: rotate(14deg);
 }
 
 /* --- Giscus Comments --- */
@@ -793,6 +844,7 @@ img {
   color: var(--green);
   border-color: var(--green);
   background: var(--green-light);
+  transform: translateY(-2px);
 }
 
 .tag-cloud__count {
@@ -833,8 +885,13 @@ img {
   --white: #ffffff;
   --bg: #fafafa;
   --green: #1a7a47;
+  --green-rgb: 26, 122, 71;
   --blue: #094ece;
   --blue-rgb: 9, 78, 206;
+  --red: #c92a2a;
+  --red-rgb: 201, 42, 42;
+  --amber: #b7791f;
+  --amber-rgb: 183, 121, 31;
   --green-light: #e6f5ee;
   --green-dark: #135c35;
   --gray-100: #f0f0f0;
@@ -842,6 +899,7 @@ img {
   --gray-400: #aaaaaa;
   --gray-500: #666666;
   --gray-600: #333333;
+  --surface: #f5f5f5;
 }
 
 [data-theme="light"] .prose pre {
@@ -940,6 +998,7 @@ img {
   height: 2px;
   width: 0%;
   background: var(--green);
+  box-shadow: 0 0 8px var(--green), 0 0 2px var(--green);
   z-index: 200;
   transition: width 0.1s linear;
 }
@@ -970,11 +1029,11 @@ img {
 
 /* --- Playlist Widget --- */
 .playlist-widget {
-  border-left: 3px solid var(--blue);
+  border: 1px solid var(--blue);
   padding: 1rem 1.25rem;
   margin: 1.75rem 0;
   background: var(--surface);
-  border-radius: 0 6px 6px 0;
+  border-radius: 6px;
 }
 
 .playlist-widget__header {
@@ -1153,6 +1212,7 @@ img {
 
 .search-input:focus {
   border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(var(--green-rgb), 0.15);
 }
 
 .search-input::placeholder {
@@ -1201,12 +1261,6 @@ img {
 }
 
 /* --- Share Button --- */
-.post__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .share-btn {
   background: none;
   border: 1px solid var(--gray-400);
@@ -1506,13 +1560,23 @@ button:active,
   justify-content: center;
 }
 
-#lightbox.open { display: flex; }
+#lightbox.open { display: flex; animation: kf-lightbox-fade 0.2s ease; }
+
+@keyframes kf-lightbox-fade { from { opacity: 0; } }
 
 #lightbox-img {
   max-width: 90vw;
   max-height: 90vh;
   object-fit: contain;
   border-radius: 4px;
+}
+
+#lightbox.open #lightbox-img {
+  animation: kf-lightbox-zoom 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes kf-lightbox-zoom {
+  from { opacity: 0; transform: scale(0.92); }
 }
 
 #lightbox-close {
@@ -1546,8 +1610,8 @@ button:active,
 /* --- Scroll Reveal (progressive enhancement: hidden only when JS is on) --- */
 html.js .fade-in {
   opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: translateY(6px);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 html.js .fade-in.visible {
@@ -1557,8 +1621,8 @@ html.js .fade-in.visible {
 
 html.js .prose-reveal {
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: translateY(6px);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 html.js .prose-reveal.is-visible {
@@ -1588,6 +1652,21 @@ html.js .post__header {
 html.js .nav__links.open {
   animation: navMenuIn 0.25s ease;
 }
+
+/* Menu items cascade in one after another */
+@keyframes navItemIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+html.js .nav__links.open li { animation: navItemIn 0.28s ease both; }
+html.js .nav__links.open li:nth-child(1) { animation-delay: 0.02s; }
+html.js .nav__links.open li:nth-child(2) { animation-delay: 0.06s; }
+html.js .nav__links.open li:nth-child(3) { animation-delay: 0.10s; }
+html.js .nav__links.open li:nth-child(4) { animation-delay: 0.14s; }
+html.js .nav__links.open li:nth-child(5) { animation-delay: 0.18s; }
+html.js .nav__links.open li:nth-child(6) { animation-delay: 0.22s; }
+html.js .nav__links.open li:nth-child(7) { animation-delay: 0.26s; }
 
 /* --- Post card hover: title shift + arrow --- */
 .post-list__title::after {
@@ -1623,21 +1702,31 @@ html.js .nav__links.open {
   animation: iconSpin 0.4s ease;
 }
 
-/* --- Tag chip hover --- */
+/* --- Tag chip hover (invert-fill) --- */
 .tag {
-  transition: transform 0.15s ease, background 0.2s ease;
+  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .tag:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  background: var(--green);
+  color: var(--bg);
 }
 
-/* --- Button press feedback --- */
+/* --- Button press feedback (punchy invert) --- */
 .copy-btn:active,
 .share-btn:active,
 #back-to-top:active,
 .nav__theme-toggle:active {
-  transform: scale(0.96);
+  transform: scale(0.9);
+}
+
+.copy-btn:active,
+.share-btn:active,
+#back-to-top:active {
+  background: var(--green);
+  color: var(--bg);
+  border-color: var(--green);
 }
 
 /* --- Focus-visible rings --- */
@@ -1703,14 +1792,74 @@ input:focus-visible,
 }
 
 .project-card:not(.project-card--static):hover {
-  transform: translateY(-6px);
+  transform: translateY(-2px);
   border-color: var(--green);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--green);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* Terminal "target-lock" corner brackets that snap into the corners on hover. */
+.project-card::before,
+.project-card::after {
+  content: "";
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--green);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.project-card::before {
+  top: 6px;
+  left: 6px;
+  border-right: none;
+  border-bottom: none;
+  transform: translate(5px, 5px);
+}
+
+.project-card::after {
+  right: 6px;
+  bottom: 6px;
+  border-left: none;
+  border-top: none;
+  transform: translate(-5px, -5px);
+}
+
+.project-card:not(.project-card--static):hover::before,
+.project-card:not(.project-card--static):hover::after {
+  opacity: 1;
+  transform: none;
+}
+
+.project-card.is-featured::before,
+.project-card.is-featured::after {
+  border-color: var(--blue);
 }
 
 /* Cards with readmore: false have no detail page — inert, no lift or pointer. */
 .project-card--static {
   cursor: default;
+}
+
+/* Mono kicker line (kind + count) so cards read as intentional, not empty. */
+.project-card__kicker {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
+
+.project-card__kind {
+  color: var(--green);
+}
+
+.project-card__count {
+  margin-left: auto;
 }
 
 .project-card__name {
@@ -1738,16 +1887,28 @@ input:focus-visible,
   color: var(--green);
 }
 
-/* "Read more" arrow after a clickable card's title; nudges right on hover. */
-.project-card__more {
-  display: inline-block;
-  margin-left: 0.35em;
-  color: var(--green);
-  transition: transform 0.2s ease;
+/* Terminal-style tech chips (mono, keeps the green .tag palette). */
+.tag--mono {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0;
 }
 
-.project-card:not(.project-card--static):hover .project-card__more {
-  transform: translateX(4px);
+/* Footer "read" affordance — fades in on hover, replaces the always-on arrow. */
+.project-card__open {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.project-card:not(.project-card--static):hover .project-card__open {
+  opacity: 1;
+  transform: none;
+  color: var(--green);
 }
 
 .project-card__body {
@@ -1824,28 +1985,89 @@ input:focus-visible,
   letter-spacing: 0.08em;
   color: var(--blue);
   border: 1px solid var(--blue);
-  border-radius: 999px;
-  padding: 0.05rem 0.5rem;
+  border-radius: 5px;
+  padding: 0.1rem 0.45rem;
   vertical-align: middle;
   white-space: nowrap;
 }
 
-.post-list__item--featured {
-  border-left: 3px solid var(--blue);
+/* Full rounded box (scoped under .post-list so its box padding/border win over
+   the .post-list__item :first-child / :last-child rules). */
+.post-list .post-list__item--featured {
+  border: 1px solid var(--blue);
   background: var(--surface);
-  border-radius: 0 6px 6px 0;
-  padding-left: var(--space-md);
+  border-radius: 6px;
+  padding: var(--space-md);
+  margin: var(--space-sm) 0;
 }
 
+/* Featured = full blue border + surface tint + badge. No stripe. */
 .project-card.is-featured {
   border-color: var(--blue);
-  box-shadow: inset 3px 0 0 var(--blue);
+  background: var(--surface);
+}
+
+/* Keep the blue identity on hover instead of flipping to the default green. */
+.project-card.is-featured:hover {
+  border-color: var(--blue);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* --- Playlist cards (mono index + series label + latest entry) --- */
+.playlist-grid {
+  counter-reset: pl;
+}
+
+.playlist-card {
+  counter-increment: pl;
+}
+
+.playlist-card__kicker {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
+
+.playlist-card__index {
+  color: var(--green);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.playlist-card__index::before {
+  content: counter(pl, decimal-leading-zero);
+}
+
+.playlist-card__label {
+  color: var(--gray-500);
 }
 
 .playlist-card__count {
-  font-size: 0.8rem;
+  margin-left: auto;
   color: var(--gray-400);
-  margin: 0.5rem 0 0;
+}
+
+.playlist-card .playlist-card__latest {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playlist-card__latest-date {
+  color: var(--gray-400);
+}
+
+.playlist-card__latest--empty {
+  color: var(--gray-400);
 }
 
 /* --- Playlist page (YouTube-style: header + numbered episodes) --- */
@@ -1860,10 +2082,9 @@ input:focus-visible,
 }
 
 .playlist-page__header.is-featured {
-  border-bottom: none;
-  border-left: 3px solid var(--blue);
+  border: 1px solid var(--blue);
   background: var(--surface);
-  border-radius: 0 8px 8px 0;
+  border-radius: 8px;
   padding: var(--space-lg);
 }
 
@@ -1965,7 +2186,10 @@ input:focus-visible,
   }
 
   .prose blockquote,
-  .prose img {
+  .prose img,
+  .prose figure,
+  .prose .callout,
+  .prose pre.mermaid {
     page-break-inside: avoid;
   }
 
@@ -2016,6 +2240,535 @@ input:focus-visible,
   font-size: 1rem;
 }
 
+/* ==========================================================
+   CONTENT FEATURES — math, diagrams, callouts, Markdown polish
+   (scoped to .prose; theme-aware via tokens)
+   ========================================================== */
+
+/* --- KaTeX math --- */
+.prose .katex { font-size: 1.05em; }
+.prose .katex-display {
+  margin: 1.25em 0;
+  padding: 0.5em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.prose .kdmath { font-style: normal; }
+
+/* --- Callouts (Obsidian-style) — accent set per type, then shared styling --- */
+.callout--note, .callout--info, .callout--question, .callout--example,
+.callout--abstract, .callout--summary, .callout--tldr, .callout--todo,
+.callout--help, .callout--faq {
+  --callout: var(--blue); --callout-rgb: var(--blue-rgb);
+}
+.callout--tip, .callout--success, .callout--hint, .callout--important,
+.callout--check, .callout--done {
+  --callout: var(--green); --callout-rgb: var(--green-rgb);
+}
+.callout--warning, .callout--caution, .callout--attention {
+  --callout: var(--amber); --callout-rgb: var(--amber-rgb);
+}
+.callout--danger, .callout--bug, .callout--error, .callout--fail,
+.callout--failure, .callout--missing {
+  --callout: var(--red); --callout-rgb: var(--red-rgb);
+}
+.callout--quote, .callout--cite { --callout: var(--gray-500); --callout-rgb: 136, 136, 136; }
+
+.prose .callout {
+  margin: 1.5em 0;
+  border: 1px solid rgba(var(--callout-rgb), 0.35);
+  border-radius: 8px;
+  background: rgba(var(--callout-rgb), 0.06);
+  overflow: hidden;
+  transition: box-shadow 0.25s ease;
+}
+.prose .callout:hover {
+  box-shadow: 0 1px 8px rgba(var(--callout-rgb), 0.1);
+}
+.prose .callout__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: -0.01em;
+  color: var(--callout);
+  background: rgba(var(--callout-rgb), 0.1);
+  border-bottom: 1px solid rgba(var(--callout-rgb), 0.18);
+}
+.prose .callout__icon { font-family: var(--font-mono); font-weight: 700; line-height: 1; }
+.prose .callout__body {
+  padding: 0.75rem 0.9rem;
+}
+.prose .callout__body > :first-child { margin-top: 0; }
+.prose .callout__body > :last-child { margin-bottom: 0; }
+
+/* foldable callout (details/summary) — height+fade reveal is driven by
+   initDetailsAnimation() in main.js (cross-browser; native details just snaps). */
+.prose details.callout .callout__header { cursor: pointer; list-style: none; }
+.prose details.callout .callout__header::-webkit-details-marker { display: none; }
+.prose details.callout .callout__header::after {
+  content: "\203A"; /* › */
+  margin-left: auto;
+  font-size: 1.1em;
+  transition: transform 0.25s ease;
+}
+.prose details.callout[open] .callout__header::after { transform: rotate(90deg); }
+
+/* --- Spoilers / plain <details> — frosted, "veiled" reveal --- */
+.prose details:not(.callout) {
+  margin: 1.5em 0;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  /* translucent, glassy panel */
+  background: color-mix(in srgb, var(--gray-100) 65%, transparent);
+  padding: 0 0.9rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.prose details:not(.callout):hover {
+  border-color: var(--green);
+  box-shadow: 0 0 18px rgba(var(--green-rgb), 0.12);
+}
+.prose details:not(.callout) > summary {
+  cursor: pointer;
+  padding: 0.7rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--gray-500);
+  list-style: none;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+.prose details:not(.callout) > summary:hover {
+  color: var(--green);
+  text-shadow: 0 0 10px rgba(var(--green-rgb), 0.45);
+}
+.prose details:not(.callout) > summary::-webkit-details-marker { display: none; }
+.prose details:not(.callout) > summary::before {
+  content: "\25B8"; /* ▸ */
+  color: var(--green);
+  display: inline-block;
+  margin-right: 0.55rem;
+  transition: transform 0.25s ease;
+}
+.prose details:not(.callout)[open] > summary::before { transform: rotate(90deg); }
+.prose details:not(.callout)[open] { padding-bottom: 0.6rem; }
+.prose details:not(.callout) .details-content > :first-child,
+.prose details:not(.callout) > summary + * { margin-top: 0; }
+.prose details:not(.callout) .details-content > :last-child { margin-bottom: 0; }
+
+/* The reveal (height + fade, and a blur→sharp "veil lift" for spoilers) is
+   driven by initDetailsAnimation() in main.js so it animates open AND close in
+   every browser — .details-content (spoilers) / .callout__body (callouts) is
+   the wrapper that gets animated. */
+
+/* --- Code block language badge (alongside the copy button) --- */
+.prose pre .code-lang {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* --- Tables: scroll wrapper (keeps centering) + zebra + caption --- */
+.table-wrap { overflow-x: auto; margin: 1.5em 0; }
+.prose .table-wrap table { margin: 0 auto; }
+.prose tbody tr {
+  transition: background 0.15s ease;
+}
+.prose tbody tr:nth-child(even) { background: rgba(var(--blue-rgb), 0.04); }
+.prose tbody tr:hover { background: rgba(var(--blue-rgb), 0.09); }
+.prose caption {
+  caption-side: bottom;
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  padding-top: 0.5em;
+}
+
+/* --- Figures (image + caption from alt text) --- */
+.prose figure {
+  margin: 1.5em 0;
+  text-align: center;
+}
+.prose figure img {
+  margin: 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.prose figure img:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+.prose figcaption {
+  font-size: 0.82rem;
+  color: var(--gray-500);
+  font-style: italic;
+  margin-top: 0.5em;
+  transition: color 0.2s ease;
+}
+
+/* --- Footnotes (kramdown-generated) --- */
+.prose .footnotes {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--gray-200);
+  font-size: 0.85rem;
+}
+.prose .footnotes ol { color: var(--gray-500); }
+.prose sup[role="doc-noteref"] a,
+.prose a.footnote {
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0 2px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.prose sup[role="doc-noteref"] a:hover,
+.prose a.footnote:hover {
+  background: rgba(var(--green-rgb), 0.12);
+  border-radius: 3px;
+}
+
+/* --- Keyboard keys --- */
+.prose kbd {
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-400);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--black);
+  white-space: nowrap;
+  transition: transform 0.1s ease, border-bottom-width 0.1s ease, box-shadow 0.1s ease;
+}
+.prose kbd:hover {
+  transform: translateY(1px);
+  border-bottom-width: 1px;
+  box-shadow: 0 0 0 1px var(--gray-200);
+}
+
+/* --- Definition lists --- */
+.prose dl { margin: 1.25em 0; }
+.prose dt {
+  font-weight: 600;
+  color: var(--black);
+  margin-top: 0.75em;
+  transition: color 0.2s ease;
+}
+.prose dt:hover { color: var(--green); }
+.prose dd { margin: 0.2em 0 0 1.25em; color: var(--gray-600); }
+
+/* --- Task lists (kramdown GFM output, tagged by initTaskLists) --- */
+.prose ul.task-list { list-style: none; padding-left: 0.5em; }
+.prose li.task-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.prose .task-list-item-checkbox {
+  accent-color: var(--green);
+  transform: translateY(1px);
+  transition: transform 0.15s ease;
+}
+.prose .task-list-item-checkbox:hover {
+  transform: translateY(1px) scale(1.2);
+}
+
+/* --- Highlight (Obsidian ==text==) --- */
+.prose mark {
+  background: rgba(var(--green-rgb), 0.22);
+  color: inherit;
+  padding: 0.05em 0.2em;
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+.prose mark:hover {
+  background: rgba(var(--green-rgb), 0.38);
+}
+
+/* --- Mermaid diagrams --- */
+.prose pre.mermaid {
+  margin: 1.5em 0;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: center;
+  line-height: normal;
+  overflow-x: auto;
+}
+
+/* --- Post Mention Cards --- */
+.mention-card-wrap { margin: 1.25em 0; }
+.mention-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mention-card:hover {
+  color: inherit;
+  border-color: var(--green);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* Terminal target-lock corner brackets on hover (matches the project cards). */
+.mention-card::before,
+.mention-card::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--green);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.mention-card::before {
+  top: 5px;
+  left: 5px;
+  border-right: none;
+  border-bottom: none;
+  transform: translate(4px, 4px);
+}
+.mention-card::after {
+  right: 5px;
+  bottom: 5px;
+  border-left: none;
+  border-top: none;
+  transform: translate(-4px, -4px);
+}
+.mention-card:hover::before,
+.mention-card:hover::after {
+  opacity: 1;
+  transform: none;
+}
+
+.mention-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.mention-card__kind {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--green);
+  margin-bottom: 3px;
+}
+
+.mention-card__title {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--black);
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mention-card:hover .mention-card__title {
+  color: var(--green);
+}
+
+.mention-card__desc {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--gray-500);
+  line-height: 1.45;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mention-card__meta {
+  flex-shrink: 0;
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--gray-400);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* Inline [[slug]] link (Obsidian-style) — internal, so no external arrow. */
+.prose a.post-link {
+  color: var(--green);
+  text-decoration: underline;
+  text-decoration-color: var(--green-light);
+  text-underline-offset: 2px;
+  font-weight: 500;
+}
+.prose a.post-link:hover { text-decoration-color: var(--green); }
+.prose a.post-link::after { content: none; }
+.prose .post-link--missing {
+  color: var(--amber);
+  border-bottom: 1px dashed var(--amber);
+  cursor: help;
+}
+
+/* Missing / unresolved mention */
+.mention-card--missing {
+  opacity: 0.6;
+  cursor: default;
+  border-style: dashed;
+}
+
+.mention-card--missing,
+.mention-card--missing:hover {
+  border-color: var(--gray-200);
+  transform: none;
+  box-shadow: none;
+}
+.mention-card--missing::before,
+.mention-card--missing::after { display: none; }
+.mention-card--missing .mention-card__kind { color: var(--gray-400); }
+
+/* --- Embedded Posts (![[slug]] transclusion) --- */
+.embed-post {
+  margin: 1.5em 0;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.embed-post__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
+  border-bottom: 1px solid var(--gray-200);
+  background: rgba(var(--green-rgb), 0.04);
+}
+
+.embed-post__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: -0.02em;
+}
+
+.embed-post__meta {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--gray-400);
+  letter-spacing: -0.02em;
+}
+
+.embed-post__meta a {
+  color: var(--gray-400);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.embed-post__meta a:hover {
+  color: var(--green);
+}
+
+.embed-post__body {
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
+}
+
+/* Prevent nested prose from doubling up outer prose spacing */
+.prose .embed-post__body.prose {
+  max-width: none;
+}
+
+/* Missing / unresolved embed */
+.embed-post--missing {
+  border-color: var(--amber);
+}
+
+.embed-post--missing .embed-post__header {
+  background: rgba(var(--amber-rgb), 0.06);
+  border-bottom: none;
+}
+
+.embed-post--missing .embed-post__title {
+  color: var(--amber);
+}
+
+/* --- Backlinks ("Mentioned in") --- */
+.backlinks {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--gray-200);
+}
+
+.backlinks__title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-400);
+  margin-bottom: var(--space-md);
+}
+
+.backlinks__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.backlinks__link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  color: var(--gray-600);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.backlinks__link::before {
+  content: "→";
+  color: var(--green);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+
+.backlinks__link:hover {
+  color: var(--green);
+  transform: translateX(3px);
+}
+
+.backlinks__name {
+  font-weight: 500;
+}
+
+.backlinks__date {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  white-space: nowrap;
+}
+
 /* --- Reduced Motion --- */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -2034,7 +2787,9 @@ input:focus-visible,
   }
 
   /* Keep the border/shadow hover feedback, but don't shift the card's position. */
-  .project-card:hover {
+  .project-card:hover,
+  .mention-card:hover {
     transform: none !important;
   }
+
 }

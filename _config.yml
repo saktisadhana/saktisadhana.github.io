@@ -27,12 +27,16 @@ og_image: /assets/og-default.png
 # Build Settings
 markdown: kramdown
 highlighter: rouge
+# Disable kramdown's own math engine so $…$ / $$…$$ pass through as literal text
+# for client-side KaTeX auto-render (self-hosted; see _includes/head.html).
+kramdown:
+  math_engine: null
 permalink: /blog/:title/
 
 # Cache-busting for CSS/JS. Bump this by 1 whenever you edit main.css or main.js
 # so returning visitors pick up the change; unchanged builds keep the same value
 # so browsers can cache the assets long-term.
-asset_version: 5
+asset_version: 14
 
 # Plugins
 plugins:
@@ -57,6 +61,7 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
+  - REFACTORING.md
   - node_modules
   - vendor
   - tools

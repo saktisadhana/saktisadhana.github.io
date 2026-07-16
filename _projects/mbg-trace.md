@@ -1,6 +1,6 @@
 ---
 title: MBG Tracing App
-description: An app made for the course Database System
+description: A tracing app I built for my Database Systems course.
 tech:
   - GitHub Pages
   - Supabase

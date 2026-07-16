@@ -30,7 +30,8 @@ Every component is free. There is no server, database, or paid service in the st
 - **Floating table of contents** on long posts — pinned left, collapsible, remembers its state
 - **Live search** on the blog and writeups lists (title + tags, no plugin)
 - **Unified tags page** spanning both posts and writeups
-- **Code blocks**: Rouge syntax highlighting + one-click copy button
+- **Rich content**: LaTeX math (self-hosted KaTeX), Obsidian-style callouts, collapsible spoilers, Mermaid diagrams, `==highlight==`, task lists, footnotes, `<kbd>` — all documented at `/cheatsheet/`
+- **Code blocks**: Rouge syntax highlighting + language badge + one-click copy button
 - **Reading aids**: reading-time estimate, scroll progress bar, related posts, back-to-top, copy-link button
 - **Image lightbox** for screenshots, with keyboard support
 - **Comments** via Giscus (GitHub Discussions)
@@ -99,6 +100,10 @@ docker run --rm -v "$PWD":/srv/jekyll -p 4000:4000 jekyll/jekyll:4 jekyll serve
 **Via the CMS (easiest):** go to `/admin`, sign in with GitHub, and create/edit posts, writeups, and the About page. Decap commits changes straight to the `main` branch.
 
 **Via Git (manual):** add a Markdown file with front matter to `_posts/` (filename `YYYY-MM-DD-title.md`) or `_writeups/`. See an existing file for the expected fields (`title`, `date`, `description`, `tags`, and for writeups `event` / `team` / `pdf`). Tags are lowercase; descriptions for common tags live in `_config.yml` under `tag_descriptions`.
+
+**Formatting reference:** the `/cheatsheet/` page (source: `cheatsheet.md`, `noindex`) shows every front-matter field and content feature — math, callouts, spoilers, Mermaid, tables, footnotes, etc. — as *syntax → rendered*. KaTeX and Mermaid are self-hosted under `assets/vendor/` and load **only** on pages that use them (detected from front matter or content), which also scopes the small per-page CSP relaxations they need.
+
+**Cross-linking (Obsidian-style):** `[[slug]]` makes an inline link, `[[slug]]` on its own line renders a mention card, and `![[slug]]` embeds another post's body. Add `|writeups` / `|projects` / `|playlists` for other collections. Also supports `![[img.png|400]]` sized images, `%%comments%%` (stripped at build), and automatic **"Mentioned in"** backlinks. Handled by `_plugins/embed_post.rb`, so it **only works under the GitHub Actions build** (`bundle exec jekyll build`) — GitHub Pages' native build ignores `_plugins/` and would silently drop it.
 
 ## Deployment
 

@@ -1,0 +1,21 @@
+{%- comment -%}
+"Mentioned in" backlinks — every post/writeup/project/playlist that links to
+this page via [[slug]] or ![[slug]]. The reverse index is built by the
+BacklinkGenerator in _plugins/embed_post.rb (site.data.backlinks keyed by URL).
+{%- endcomment -%}
+{%- assign backs = site.data.backlinks[page.url] -%}
+{%- if backs and backs.size > 0 -%}
+<section class="backlinks">
+  <h2 class="backlinks__title">Mentioned in</h2>
+  <ul class="backlinks__list">
+    {%- for b in backs -%}
+    <li class="backlinks__item">
+      <a href="{{ b.url | relative_url }}" class="backlinks__link">
+        <span class="backlinks__name">{{ b.title }}</span>
+        {%- if b.date %}<time class="backlinks__date" datetime="{{ b.date | date_to_xmlschema }}">{{ b.date | date: "%b %d, %Y" }}</time>{%- endif -%}
+      </a>
+    </li>
+    {%- endfor -%}
+  </ul>
+</section>
+{%- endif -%}

@@ -1,15 +1,15 @@
 <nav class="nav" id="main-nav">
   <div class="nav__inner">
+    <a href="{{ '/' | relative_url }}" class="nav__logo" aria-label="{{ site.title }}">
+      <img src="{{ '/assets/favicon.svg' | relative_url }}" alt="{{ site.title }}">
+    </a>
     <div class="nav__controls">
+      <button class="nav__theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀</button>
       <button class="nav__toggle" id="nav-toggle" aria-label="Toggle navigation" aria-controls="nav-links" aria-expanded="false">
         <span></span>
         <span></span>
       </button>
-      <button class="nav__theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀</button>
     </div>
-    <a href="{{ '/' | relative_url }}" class="nav__logo" aria-label="{{ site.title }}">
-      <img src="{{ '/assets/favicon.svg' | relative_url }}" alt="{{ site.title }}">
-    </a>
   </div>
   <ul class="nav__links" id="nav-links">
     {% assign nav_pages = site.pages | where: "nav", true | sort: "nav_order" %}

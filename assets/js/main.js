@@ -73,6 +73,9 @@ function copyText(text) {
 // Copy button on code blocks
 function initCopyButtons() {
   document.querySelectorAll('.prose pre').forEach(function (pre) {
+    // Skip mermaid diagrams — they render as SVG, not copyable text
+    if (pre.classList.contains('mermaid')) return;
+
     var btn = document.createElement('button');
     btn.className = 'copy-btn';
     btn.textContent = 'copy';
@@ -125,6 +128,7 @@ function initThemeToggle() {
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', theme === 'light' ? '#fafafa' : '#0e0e0e');
     syncGiscus(theme);
+    renderMermaid(); // re-theme any diagrams to match (no-op if none / not yet rendered)
   }
 
   applyTheme(localStorage.getItem('theme') || 'dark');
@@ -374,11 +378,293 @@ function initLightbox() {
   });
 }
 
+// ---------------------------------------------------------------------------
+// Content features (math, diagrams, callouts, and Markdown polish). Each is
+// scoped to `.prose`, guarded by feature-detection, and safe to no-op.
+// ---------------------------------------------------------------------------
+
+// LaTeX math via self-hosted KaTeX auto-render. kramdown (math_engine: null)
+// leaves the $…$ / $$…$$ delimiters in the text (inside .kdmath), so auto-render
+// picks them up. Code/pre are ignored; escape a literal dollar in prose as \$.
+function initMath() {
+  var prose = document.querySelector('.prose');
+  if (!prose || typeof renderMathInElement !== 'function') return;
+  renderMathInElement(prose, {
+    delimiters: [
+      { left: '$$', right: '$$', display: true },
+      { left: '\\[', right: '\\]', display: true },
+      { left: '\\(', right: '\\)', display: false },
+      { left: '$', right: '$', display: false }
+    ],
+    ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+    throwOnError: false
+  });
+}
+
+// Mermaid diagrams from ```mermaid fences. Rouge wraps them in .language-mermaid;
+// swap that for a <pre class="mermaid"> holding the raw source, then render.
+var mermaidSources = [];
+var mermaidTheme = null;
+
+function initMermaid() {
+  if (typeof mermaid === 'undefined') return;
+  document.querySelectorAll('.prose .language-mermaid').forEach(function (block) {
+    var code = block.querySelector('code') || block;
+    var pre = document.createElement('pre');
+    pre.className = 'mermaid';
+    pre.textContent = code.textContent.replace(/\n$/, '');
+    var wrapper = block.closest('.highlighter-rouge') || block;
+    wrapper.parentNode.replaceChild(pre, wrapper);
+    mermaidSources.push({ el: pre, src: pre.textContent });
+  });
+  renderMermaid();
+}
+
+// (Re)render diagrams for the current theme. Called on load and on theme toggle.
+function renderMermaid() {
+  if (typeof mermaid === 'undefined' || !mermaidSources.length) return;
+  var theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'default' : 'dark';
+  if (theme === mermaidTheme) return; // already rendered for this theme
+  mermaidTheme = theme;
+  mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'strict', fontFamily: 'inherit' });
+  mermaidSources.forEach(function (m) {
+    m.el.removeAttribute('data-processed');
+    m.el.innerHTML = '';
+    m.el.textContent = m.src;
+  });
+  try {
+    mermaid.run({ nodes: mermaidSources.map(function (m) { return m.el; }) });
+  } catch (e) { /* leave the source visible if a diagram fails to parse */ }
+}
+
+// Obsidian-style callouts: a blockquote whose first line is `[!type]` (optionally
+// `-`/`+` for a collapsible one, and an optional title). Types map to an accent
+// colour + icon in CSS.
+function initCallouts() {
+  // Icon per type. Obsidian aliases are their own classes (coloured via CSS groups).
+  var ICON = {
+    note: '✎',
+    abstract: '≡', summary: '≡', tldr: '≡',
+    info: 'ℹ', todo: '☐',
+    tip: '✦', hint: '✦', important: '★',
+    success: '✔', check: '✔', done: '✔',
+    question: '?', help: '?', faq: '?',
+    warning: '▲', caution: '▲', attention: '▲',
+    danger: '‼', error: '✖', fail: '✖', failure: '✖', missing: '✖',
+    example: '❯', quote: '❝', cite: '❝', bug: '☣'
+  };
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  document.querySelectorAll('.prose blockquote').forEach(function (bq) {
+    var p = bq.querySelector('p');
+    if (!p) return;
+    var m = p.innerHTML.match(/^\s*\[!(\w+)\]([+-]?)[ \t]*([^\n<]*)/);
+    if (!m) return;
+
+    var type = m[1].toLowerCase();
+    if (!ICON[type]) type = 'note';
+    var fold = m[2];                       // '' | '-' (collapsed) | '+' (open)
+    var title = (m[3] || '').trim() || cap(type);
+
+    // Strip the marker line from the first paragraph.
+    p.innerHTML = p.innerHTML.replace(/^\s*\[!\w+\][+-]?[ \t]*[^\n<]*(\n|<br\s*\/?>)?/, '');
+    if (!p.textContent.trim() && !p.querySelector('img')) p.remove();
+
+    var headHTML = '<span class="callout__icon" aria-hidden="true">' + ICON[type] +
+                   '</span><span class="callout__title">' + title + '</span>';
+
+    var foldable = (fold === '-' || fold === '+');
+    var box = document.createElement(foldable ? 'details' : 'div');
+    box.className = 'callout callout--' + type + (foldable ? ' callout--foldable' : '');
+    if (fold === '+') box.open = true;
+
+    var header = document.createElement(foldable ? 'summary' : 'div');
+    header.className = 'callout__header';
+    header.innerHTML = headHTML;
+    box.appendChild(header);
+
+    var body = document.createElement('div');
+    body.className = 'callout__body';
+    while (bq.firstChild) body.appendChild(bq.firstChild);
+    box.appendChild(body);
+
+    bq.parentNode.replaceChild(box, bq);
+  });
+}
+
+// Language badge on fenced code blocks (sits alongside the copy button).
+function initCodeLabels() {
+  document.querySelectorAll('.prose div.highlighter-rouge').forEach(function (block) {
+    var cls = block.className.match(/language-([\w+-]+)/);
+    if (!cls || cls[1] === 'mermaid') return;
+    var pre = block.querySelector('pre');
+    if (!pre) return;
+    var label = document.createElement('span');
+    label.className = 'code-lang';
+    label.textContent = cls[1];
+    pre.appendChild(label);
+  });
+}
+
+// Wrap tables so wide ones scroll instead of overflowing the page on mobile.
+function initTableWrap() {
+  document.querySelectorAll('.prose table').forEach(function (t) {
+    if (t.parentNode.classList && t.parentNode.classList.contains('table-wrap')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'table-wrap';
+    t.parentNode.insertBefore(wrap, t);
+    wrap.appendChild(t);
+  });
+}
+
+// Turn a standalone image with alt text into <figure> + <figcaption>.
+function initFigures() {
+  document.querySelectorAll('.prose img').forEach(function (img) {
+    if (img.closest('a') || img.closest('figure')) return;
+    var alt = (img.getAttribute('alt') || '').trim();
+    if (!alt) return;
+    var fig = document.createElement('figure');
+    var cap = document.createElement('figcaption');
+    cap.textContent = alt;
+    var p = img.parentNode;
+    if (p.tagName === 'P' && p.childNodes.length === 1) {
+      p.parentNode.insertBefore(fig, p);
+      fig.appendChild(img);
+      fig.appendChild(cap);
+      p.remove();
+    } else {
+      p.insertBefore(fig, img);
+      fig.appendChild(img);
+      fig.appendChild(cap);
+    }
+  });
+}
+
+// Obsidian ==highlight== → <mark>, over prose text only (skips code, math, links).
+function initHighlight() {
+  var prose = document.querySelector('.prose');
+  if (!prose) return;
+  var walker = document.createTreeWalker(prose, NodeFilter.SHOW_TEXT, {
+    acceptNode: function (node) {
+      if (!node.nodeValue || node.nodeValue.indexOf('==') === -1) return NodeFilter.FILTER_REJECT;
+      if (node.parentNode.closest('pre, code, a, .katex, .code-lang')) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  var targets = [];
+  while (walker.nextNode()) targets.push(walker.currentNode);
+  targets.forEach(function (node) {
+    if (!/==[^=]+==/.test(node.nodeValue)) return;
+    var frag = document.createDocumentFragment();
+    var parts = node.nodeValue.split(/==([^=]+)==/g);
+    parts.forEach(function (part, i) {
+      if (i % 2 === 1) {
+        var mark = document.createElement('mark');
+        mark.textContent = part;
+        frag.appendChild(mark);
+      } else if (part) {
+        frag.appendChild(document.createTextNode(part));
+      }
+    });
+    node.parentNode.replaceChild(frag, node);
+  });
+}
+
+// kramdown's GFM parser already renders `- [ ]` / `- [x]` as disabled checkboxes
+// (.task-list-item-checkbox). Just tag the list + items so the CSS can hide the
+// bullet and align things (avoids relying on :has() for older browsers).
+function initTaskLists() {
+  document.querySelectorAll('.prose .task-list-item-checkbox').forEach(function (box) {
+    var li = box.closest('li');
+    if (li) li.classList.add('task-item');
+    var list = box.closest('ul');
+    if (list) list.classList.add('task-list');
+  });
+}
+
+// Smoothly animate <details> open AND close (spoilers + foldable callouts).
+// Native <details> snaps; the modern ::details-content CSS only works in the very
+// newest browsers. This drives a height + fade (spoilers also un-blur) via the
+// Web Animations API, which works everywhere, and keeps the content visible
+// through the close animation before removing [open].
+function initDetailsAnimation() {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll('.prose details').forEach(function (details) {
+    var summary = details.querySelector('summary');
+    if (!summary) return;
+
+    // Single wrapper to animate. Callouts already have .callout__body; for a
+    // plain spoiler, wrap everything after the summary in one.
+    var content = details.querySelector(':scope > .callout__body');
+    if (!content) {
+      content = document.createElement('div');
+      content.className = 'details-content';
+      var node = summary.nextSibling;
+      while (node) {
+        var next = node.nextSibling;
+        content.appendChild(node);
+        node = next;
+      }
+      details.appendChild(content);
+    }
+
+    var isSpoiler = !details.classList.contains('callout');
+    var anim = null;
+
+    function keyframes(from, to) {
+      var k = [
+        { height: from + 'px', opacity: from ? 1 : 0 },
+        { height: to + 'px', opacity: to ? 1 : 0 }
+      ];
+      if (isSpoiler) {
+        k[0].filter = from ? 'blur(0)' : 'blur(6px)';
+        k[1].filter = to ? 'blur(0)' : 'blur(6px)';
+      }
+      return k;
+    }
+
+    function run(from, to, done) {
+      if (anim) anim.cancel();
+      content.style.overflow = 'hidden';
+      content.style.height = from + 'px';
+      anim = content.animate(keyframes(from, to), { duration: 280, easing: 'ease' });
+      anim.onfinish = function () {
+        anim = null;
+        content.style.height = '';
+        content.style.overflow = '';
+        content.style.filter = '';
+        if (done) done();
+      };
+    }
+
+    summary.addEventListener('click', function (e) {
+      if (reduce || typeof content.animate !== 'function') return; // native toggle
+      e.preventDefault();
+      if (details.open) {
+        run(content.scrollHeight, 0, function () { details.open = false; });
+      } else {
+        details.open = true;
+        run(0, content.scrollHeight, null);
+      }
+    });
+  });
+}
+
 // Boot everything once the DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
   initNavToggle();
   initFadeIn();
   initCopyButtons();
+  initCodeLabels();
+  initMath();
+  initMermaid();
+  initCallouts();
+  initDetailsAnimation();
+  initHighlight();
+  initTaskLists();
+  initTableWrap();
+  initFigures();
   initProgressBar();
   initThemeToggle();
   initBackToTop();

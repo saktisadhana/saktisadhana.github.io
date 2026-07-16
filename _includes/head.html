@@ -1,8 +1,33 @@
 <meta charset="utf-8">
-<!-- CSP: no 'unsafe-inline'. The lone inline script (the no-flash theme setter
-     below) is allowlisted by its SHA-256 hash — regenerate the hash if you edit
-     that script. JSON-LD (jekyll-seo-tag) is a data block, not subject to CSP. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-Ib4vjS1ObfX+/UrFuiDwGLT9lGOamit0A2XmsEy38Zg=' https://giscus.app; style-src 'self' https://giscus.app; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://giscus.app; frame-src https://giscus.app; form-action 'self'; manifest-src 'self'">
+{%- comment -%}
+  Per-page CSP. Strict by default (no 'unsafe-inline'); the lone inline theme
+  script below is allowlisted by its SHA-256 hash — regenerate that hash if you
+  edit it. JSON-LD (jekyll-seo-tag) is a data block, not subject to CSP.
+
+  Pages that use math or diagrams opt into the *minimal* extra allowance they
+  need — nothing else does:
+    · math    → adds `style-src-attr 'unsafe-inline'` (KaTeX inline positioning
+                styles only; <style> blocks + external CSS stay blocked)
+    · mermaid → adds 'unsafe-inline' to `style-src` (Mermaid injects <style>)
+  Detected from front matter (`math: true` / `mermaid: true`) or page content.
+{%- endcomment -%}
+{%- comment -%}
+  NB: page.content here is the *rendered* HTML, so detect the forms kramdown/Rouge
+  emit — `kdmath` (from $…$ / $$…$$) and `language-mermaid` (from ```mermaid) —
+  as well as the `math:` / `mermaid:` front-matter flags.
+{%- endcomment -%}
+{%- assign needs_math = false -%}
+{%- if page.math or page.content contains 'kdmath' or page.content contains '$$' -%}{%- assign needs_math = true -%}{%- endif -%}
+{%- assign needs_mermaid = false -%}
+{%- if page.mermaid or page.content contains 'language-mermaid' -%}{%- assign needs_mermaid = true -%}{%- endif -%}
+{%- assign style_src = "'self' https://giscus.app" -%}
+{%- assign style_src_attr = "" -%}
+{%- if needs_mermaid -%}
+  {%- assign style_src = "'self' 'unsafe-inline' https://giscus.app" -%}
+{%- elsif needs_math -%}
+  {%- assign style_src_attr = " style-src-attr 'unsafe-inline';" -%}
+{%- endif -%}
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-Ib4vjS1ObfX+/UrFuiDwGLT9lGOamit0A2XmsEy38Zg=' https://giscus.app; style-src {{ style_src }};{{ style_src_attr }} img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://giscus.app; frame-src https://giscus.app; form-action 'self'; manifest-src 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>var d=document.documentElement;d.setAttribute('data-theme',localStorage.getItem('theme')||'dark');d.classList.add('js');if(localStorage.getItem('tocHidden')==='1'||window.matchMedia('(max-width:1359px)').matches)d.classList.add('toc-collapsed');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +64,17 @@
 
 <!-- CSS -->
 <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}?v={{ site.asset_version }}">
+
+{%- if needs_math %}
+<!-- KaTeX (self-hosted; only loaded on pages that contain math) -->
+<link rel="stylesheet" href="{{ '/assets/vendor/katex/katex.min.css' | relative_url }}?v={{ site.asset_version }}">
+<script defer src="{{ '/assets/vendor/katex/katex.min.js' | relative_url }}?v={{ site.asset_version }}"></script>
+<script defer src="{{ '/assets/vendor/katex/contrib/auto-render.min.js' | relative_url }}?v={{ site.asset_version }}"></script>
+{%- endif %}
+{%- if needs_mermaid %}
+<!-- Mermaid (self-hosted; only loaded on pages that contain diagrams) -->
+<script defer src="{{ '/assets/vendor/mermaid/mermaid.min.js' | relative_url }}?v={{ site.asset_version }}"></script>
+{%- endif %}
 
 <!-- Feed discovery (main posts feed + any collection feeds) -->
 {% feed_meta %}

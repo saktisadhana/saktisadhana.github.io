@@ -32,6 +32,7 @@ layout: default
     {{ content | replace: '<img ', '<img loading="lazy" decoding="async" ' }}
   </div>
 
+  {% include backlinks.html %}
   {% include related.html collection=site.posts title="Related posts" %}
   {% include comments.html %}
 

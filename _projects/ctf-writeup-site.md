@@ -1,6 +1,6 @@
 ---
 title: CTF Writeup Site
-description: A minimalist Jekyll site for CTF writeups and blog posts.
+description: This site. A static Jekyll setup for my writeups and blog, hosted on GitHub Pages.
 tech:
   - Jekyll
   - GitHub Pages

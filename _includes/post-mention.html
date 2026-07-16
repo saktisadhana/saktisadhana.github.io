@@ -1,0 +1,35 @@
+{%- comment -%}
+Mention card — a standout link-preview to another post/writeup/project/playlist.
+Normally written as an own-line [[slug]] (the plugin injects this include), but
+can be called directly:
+
+  {% include post-mention.html slug="welcome-to-my-blog" %}
+  {% include post-mention.html slug="daily-ctf" collection="playlists" %}
+
+Params: slug (required); collection = posts (default) | writeups | projects | playlists
+{%- endcomment -%}
+
+{%- assign _col = include.collection | default: "posts" -%}
+{%- assign _slug = include.slug -%}
+{%- assign _found = nil -%}
+
+{%- case _col -%}
+{%- when "writeups" -%}{%- assign _kind = "writeup" -%}{%- assign _coll = site.writeups -%}
+{%- when "projects" -%}{%- assign _kind = "project" -%}{%- assign _coll = site.projects -%}
+{%- when "playlists" -%}{%- assign _kind = "playlist" -%}{%- assign _coll = site.playlists -%}
+{%- else -%}{%- assign _kind = "post" -%}{%- assign _coll = site.posts -%}
+{%- endcase -%}
+
+{%- for item in _coll -%}
+  {%- assign item_slug = item.path | split: "/" | last | split: "." | first -%}
+  {%- if item.slug == _slug or item_slug == _slug -%}
+    {%- assign _found = item -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if _found -%}
+<div class="mention-card-wrap"><a href="{{ _found.url | relative_url }}" class="mention-card"><span class="mention-card__body"><span class="mention-card__kind">{{ _kind }} →</span><span class="mention-card__title">{{ _found.title }}</span>{% if _found.description %}<span class="mention-card__desc">{{ _found.description }}</span>{% endif %}</span>{% if _found.date %}<span class="mention-card__meta"><time datetime="{{ _found.date | date_to_xmlschema }}">{{ _found.date | date: "%b %d, %Y" }}</time></span>{% endif %}</a></div>
+{%- else -%}
+<div class="mention-card-wrap"><span class="mention-card mention-card--missing" title="Not found: {{ _slug }}"><span class="mention-card__body"><span class="mention-card__kind">{{ _kind }}</span><span class="mention-card__title">{{ _slug | replace: "-", " " }}</span><span class="mention-card__desc">Not found — check the slug.</span></span></span></div>
+{%- endif -%}

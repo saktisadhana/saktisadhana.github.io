@@ -1,8 +1,8 @@
 ---
 title: "Building This Blog"
-description: "How this site came together — Jekyll, a Git-based CMS, and the design decisions along the way."
+description: "How I built this site, and the parts that fought back along the way."
 featured: true
 order: 1
 ---
 
-Notes from building this site from scratch: the stack, the trade-offs, and the little details that make it feel like mine.
+Notes from putting this site together: the stack I landed on, and the bits that took longer than they should have.

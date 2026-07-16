@@ -6,6 +6,8 @@ nav: true
 nav_order: 7
 ---
 
+<p class="hero__sub">Things I've built, for coursework and for fun.</p>
+
 <div class="project-grid">
   {% if site.projects %}
   {% assign sorted_projects = site.projects | sort: 'order' %}
@@ -14,22 +16,31 @@ nav_order: 7
   {% if can_read == nil %}{% assign can_read = true %}{% endif %}
   <article class="project-card fade-in{% unless can_read %} project-card--static{% endunless %}">
     <div class="project-card__body">
+      <div class="project-card__kicker">
+        <span class="project-card__kind">project</span>
+        {% if project.tech and project.tech.size > 0 %}<span class="project-card__count">{{ project.tech | size }} tech</span>{% endif %}
+      </div>
       <h2 class="project-card__name">
         {%- if can_read -%}
-        <a class="project-card__link" href="{{ project.url | relative_url }}">{{ project.title }}<span class="project-card__more" aria-hidden="true">→</span></a>
+        <a class="project-card__link" href="{{ project.url | relative_url }}">{{ project.title }}</a>
         {%- else -%}
         {{ project.title }}
         {%- endif -%}
       </h2>
       <p class="project-card__desc">{{ project.description }}</p>
+      {% if project.tech and project.tech.size > 0 %}
       <div class="project-card__tech">
-        {% for t in project.tech %}<span class="tag">{{ t }}</span>{% endfor %}
+        {% for t in project.tech %}<span class="tag tag--mono">{{ t }}</span>{% endfor %}
       </div>
+      {% endif %}
     </div>
+    {% if project.repo or project.live or can_read %}
     <footer class="project-card__links">
       {% if project.repo %}<a href="{{ project.repo }}" target="_blank" rel="noopener">GitHub</a>{% endif %}
       {% if project.live %}<a href="{{ project.live }}" target="_blank" rel="noopener">Live</a>{% endif %}
+      {% if can_read %}<span class="project-card__open" aria-hidden="true">read →</span>{% endif %}
     </footer>
+    {% endif %}
   </article>
   {% endfor %}
   {% endif %}
