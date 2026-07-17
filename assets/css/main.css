@@ -2504,6 +2504,9 @@ input:focus-visible,
   overflow-x: auto;
 }
 
+/* Diagrams render to SVG — no copyable text, so no copy button (safety net). */
+.prose pre.mermaid .copy-btn { display: none; }
+
 /* --- Post Mention Cards --- */
 .mention-card-wrap { margin: 1.25em 0; }
 .mention-card {

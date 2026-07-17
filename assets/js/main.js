@@ -73,8 +73,9 @@ function copyText(text) {
 // Copy button on code blocks
 function initCopyButtons() {
   document.querySelectorAll('.prose pre').forEach(function (pre) {
-    // Skip mermaid diagrams — they render as SVG, not copyable text
-    if (pre.classList.contains('mermaid')) return;
+    // Skip mermaid diagrams — they render as SVG, not copyable text (guard both
+    // the rendered <pre class="mermaid"> and the pre-render .language-mermaid block).
+    if (pre.classList.contains('mermaid') || pre.closest('.language-mermaid')) return;
 
     var btn = document.createElement('button');
     btn.className = 'copy-btn';
@@ -413,7 +414,11 @@ function initMermaid() {
     var pre = document.createElement('pre');
     pre.className = 'mermaid';
     pre.textContent = code.textContent.replace(/\n$/, '');
-    var wrapper = block.closest('.highlighter-rouge') || block;
+    // Replace the WHOLE code block, whichever wrapper Rouge/kramdown emitted:
+    // a .highlighter-rouge <div>, or a bare <pre><code> (no highlight div).
+    // Falling back to just the <code> would orphan the outer <pre> — which then
+    // wrongly gets a copy button.
+    var wrapper = block.closest('.highlighter-rouge') || block.closest('pre') || block;
     wrapper.parentNode.replaceChild(pre, wrapper);
     mermaidSources.push({ el: pre, src: pre.textContent });
   });
@@ -672,10 +677,10 @@ function initDetailsAnimation() {
 document.addEventListener('DOMContentLoaded', function () {
   initNavToggle();
   initFadeIn();
+  initMermaid();
   initCopyButtons();
   initCodeLabels();
   initMath();
-  initMermaid();
   initCallouts();
   initDetailsAnimation();
   initHighlight();
