@@ -1,0 +1,16 @@
+# Normalize line endings: store LF in the repo, convert on checkout as needed.
+# This ends the "LF will be replaced by CRLF" warnings on Windows.
+* text=auto eol=lf
+
+# Binary assets — never normalize or attempt a text diff.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.woff  binary
+*.woff2 binary
+
+# Vendored libraries (KaTeX, Mermaid, tulip-pm) — keep byte-exact as downloaded.
+assets/vendor/** -text

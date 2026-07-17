@@ -29,7 +29,7 @@ Params: slug (required); collection = posts (default) | writeups | projects | pl
 {%- endfor -%}
 
 {%- if _found -%}
-<div class="mention-card-wrap"><a href="{{ _found.url | relative_url }}" class="mention-card"><span class="mention-card__body"><span class="mention-card__kind">{{ _kind }} →</span><span class="mention-card__title">{{ _found.title }}</span>{% if _found.description %}<span class="mention-card__desc">{{ _found.description }}</span>{% endif %}</span>{% if _found.date %}<span class="mention-card__meta"><time datetime="{{ _found.date | date_to_xmlschema }}">{{ _found.date | date: "%b %d, %Y" }}</time></span>{% endif %}</a></div>
+<div class="mention-card-wrap"><a href="{{ _found.url | relative_url }}" class="mention-card"><span class="mention-card__body"><span class="mention-card__kind">{{ _kind }} →</span><span class="mention-card__title">{{ _found.title | escape }}</span>{% if _found.description %}<span class="mention-card__desc">{{ _found.description | escape }}</span>{% endif %}</span>{% if _found.date %}<span class="mention-card__meta"><time datetime="{{ _found.date | date_to_xmlschema }}">{{ _found.date | date: "%b %d, %Y" }}</time></span>{% endif %}</a></div>
 {%- else -%}
-<div class="mention-card-wrap"><span class="mention-card mention-card--missing" title="Not found: {{ _slug }}"><span class="mention-card__body"><span class="mention-card__kind">{{ _kind }}</span><span class="mention-card__title">{{ _slug | replace: "-", " " }}</span><span class="mention-card__desc">Not found — check the slug.</span></span></span></div>
+<div class="mention-card-wrap"><span class="mention-card mention-card--missing" title="Not found: {{ _slug | escape }}"><span class="mention-card__body"><span class="mention-card__kind">{{ _kind }}</span><span class="mention-card__title">{{ _slug | replace: "-", " " | escape }}</span><span class="mention-card__desc">Not found — check the slug.</span></span></span></div>
 {%- endif -%}

@@ -582,6 +582,23 @@ function initTaskLists() {
   });
 }
 
+// Harden off-site links in article content: rel="noopener noreferrer" closes
+// reverse-tabnabbing (for any target=_blank) and drops the Referer header to
+// external sites. Same-origin and anchor/relative links are left alone.
+function initExternalLinks() {
+  var host = location.hostname;
+  document.querySelectorAll('.prose a[href]').forEach(function (a) {
+    var href = a.getAttribute('href') || '';
+    if (!/^https?:\/\//i.test(href)) return;
+    try { if (new URL(href, location.href).hostname === host) return; } catch (e) { return; }
+    var rel = (a.getAttribute('rel') || '').split(/\s+/).filter(Boolean);
+    ['noopener', 'noreferrer'].forEach(function (t) {
+      if (rel.indexOf(t) === -1) rel.push(t);
+    });
+    a.setAttribute('rel', rel.join(' '));
+  });
+}
+
 // Smoothly animate <details> open AND close (spoilers + foldable callouts).
 // Native <details> snaps; the modern ::details-content CSS only works in the very
 // newest browsers. This drives a height + fade (spoilers also un-blur) via the
@@ -665,6 +682,7 @@ document.addEventListener('DOMContentLoaded', function () {
   initTaskLists();
   initTableWrap();
   initFigures();
+  initExternalLinks();
   initProgressBar();
   initThemeToggle();
   initBackToTop();

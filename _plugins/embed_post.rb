@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "cgi"
+
 # Obsidian-style cross-references + a few authoring niceties, resolved at
 # :pre_render (before Liquid + Markdown) so results flow through the pipeline.
 #
@@ -34,11 +36,15 @@ module EmbedPost
     end
   end
 
+  def h(str)
+    CGI.escapeHTML(str.to_s)
+  end
+
   # ![[image.png|400]] → a centered image (width optional, px).
   def image_html(file, width)
     src = file.start_with?("/") ? file : "/assets/uploads/#{file}"
     w = (width && width =~ /\A\d+\z/) ? %( width="#{width}") : ""
-    %(<figure class="prose-figure"><img src="#{src}" alt=""#{w}></figure>)
+    %(<figure class="prose-figure"><img src="#{h(src)}" alt=""#{w}></figure>)
   end
 
   # Rendered-HTML embed card for a resolved (or missing) target.
@@ -49,8 +55,8 @@ module EmbedPost
       return <<~HTML
         <div class="embed-post embed-post--missing">
           <div class="embed-post__header">
-            <span class="embed-post__title">⚠ Could not find: #{slug}</span>
-            <span class="embed-post__meta">collection: #{collection}</span>
+            <span class="embed-post__title">⚠ Could not find: #{h(slug)}</span>
+            <span class="embed-post__meta">collection: #{h(collection)}</span>
           </div>
         </div>
       HTML
@@ -59,16 +65,17 @@ module EmbedPost
     title = target.data["title"] || slug.tr("-", " ").capitalize
     url   = target.url
     date  = target.data["date"]
+    # body_html is already-rendered, trusted HTML from the target — not escaped.
     body_html = site.find_converter_instance(Jekyll::Converters::Markdown).convert(target.content)
 
     meta = +""
     meta << "<time>#{date.strftime('%b %d, %Y')}</time>" if date.respond_to?(:strftime)
-    meta << " · <a href=\"#{url}\">Open original →</a>"
+    meta << " · <a href=\"#{h(url)}\">Open original →</a>"
 
     <<~HTML
       <div class="embed-post">
         <div class="embed-post__header">
-          <a href="#{url}" class="embed-post__title">#{title}</a>
+          <a href="#{h(url)}" class="embed-post__title">#{h(title)}</a>
           <span class="embed-post__meta">#{meta}</span>
         </div>
         <div class="embed-post__body prose">
@@ -101,8 +108,8 @@ Jekyll::Hooks.register [:posts, :pages, :documents], :pre_render do |doc|
     alt = Regexp.last_match(1).strip
     width = Regexp.last_match(2)
     src = Regexp.last_match(3)
-    cap = alt.empty? ? "" : %(<figcaption>#{alt}</figcaption>)
-    %(<figure class="prose-figure"><img src="#{src}" alt="#{alt}" width="#{width}">#{cap}</figure>)
+    cap = alt.empty? ? "" : %(<figcaption>#{EmbedPost.h(alt)}</figcaption>)
+    %(<figure class="prose-figure"><img src="#{EmbedPost.h(src)}" alt="#{EmbedPost.h(alt)}" width="#{width}">#{cap}</figure>)
   end
 
   # 1. ![[…]] on its own line → image (if the target is an image) or an embed.
@@ -116,10 +123,11 @@ Jekyll::Hooks.register [:posts, :pages, :documents], :pre_render do |doc|
     end
   end
 
-  # 2. [[…]] on its own line → mention card (reuse the include).
+  # 2. [[…]] on its own line → mention card (reuse the include). Strip quotes so
+  # the slug can't break out of the Liquid string argument.
   safe = safe.gsub(/^\[\[([^\]\|\n]+?)(?:\|(\w+))?\]\][ \t]*$/) do
-    slug = Regexp.last_match(1).strip
-    collection = (Regexp.last_match(2) || "posts").strip
+    slug = Regexp.last_match(1).strip.delete('"')
+    collection = (Regexp.last_match(2) || "posts").strip.delete('"')
     %({% include post-mention.html slug="#{slug}" collection="#{collection}" %})
   end
 
@@ -129,9 +137,9 @@ Jekyll::Hooks.register [:posts, :pages, :documents], :pre_render do |doc|
     collection = (Regexp.last_match(2) || "posts").strip
     target = EmbedPost.find_target(site, slug, collection)
     if target
-      %(<a class="post-link" href="#{target.url}">#{target.data['title'] || slug}</a>)
+      %(<a class="post-link" href="#{EmbedPost.h(target.url)}">#{EmbedPost.h(target.data['title'] || slug)}</a>)
     else
-      %(<span class="post-link post-link--missing" title="Post not found: #{slug}">#{slug}</span>)
+      %(<span class="post-link post-link--missing" title="Post not found: #{EmbedPost.h(slug)}">#{EmbedPost.h(slug)}</span>)
     end
   end
 
